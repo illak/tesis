@@ -6,7 +6,8 @@ Título: Exploración y visualización de redes de músicos.
 Tesista: Illak Zapata
 Directores: Damián Barsotti y Mariano Barsotti
 
-###Contexto
+### Contexto
+
 El análisis de redes es un área extensa de conocimiento cuyo objetivo de estudio puede sintetizarse en la extracción de propiedades sobre un conjunto de entidades relacionadas entre sí. Estas entidades junto con sus relaciones se las denomina redes y abarcan objetos muy disímiles como redes sociales, de transporte, eléctrica, biológicas, epidemiológicas, etc. 
 Hoy en día gran parte del análisis de redes se ha enfocado particularmente al estudio de las redes sociales cuyos campos de aplicación van desde la sociología hasta el marketing empresarial. En este caso particular las entidades pueden ser personas o grupos y las relaciones representan atributos en común o flujos de información entre aquellas. Los análisis clásicos sobre estos tipos de redes son Detección de Comunidades y Medidas de Centralidad.
 La visualización de datos es un elemento esencial a la hora interpretar los resultados obtenidos en dichos análisis lo cual permite al usuario la interacción directa con los datos, facilitando a la comprensión y conocimiento de los mismos y ayudando en la toma de decisiones.
@@ -89,7 +90,7 @@ ejemplo:
 3) Usar el esquema de directorios que se presenta junto con el repositorio y en los pasos a continuación. Esto es para facilitar la ejecución de los programas en un futuro mediante la automatización de los mismos usando *script bashs*.
 
 
-####1) Descarga de datos
+#### 1) Descarga de datos
 
 EL primer paso es la descarga de los datos de las distintas fuentes:
 
@@ -120,7 +121,7 @@ Extraer los archivos en los directorios correspondientes a cada fuente en *files
 
 ---
 
-####2) ETL1: Generación de parquets a partir de los datos
+#### 2) ETL1: Generación de parquets a partir de los datos
 
 Para este paso es necesario correr cada uno de los programas en el directorio: [bd_source/builders](https://bitbucket.org/bigdata_famaf/tesis_illak/src/master/bd_source/builders/).
 
@@ -209,7 +210,7 @@ $ ./build_wiki.sh
 ---
 
 
-####3) ETL2: Unificación de datos
+#### 3) ETL2: Unificación de datos
 
 Una vez generados los parquets en la etapa anterior se procede con la unificación de los mismos para generar la BD Target.
 Para esto se utiliza el programa en el directorio [bd_target/target_builder](https://bitbucket.org/bigdata_famaf/tesis_illak/src/master/bd_target/target_builder/).
@@ -238,13 +239,13 @@ $ ./build_db.sh
 
 ---
 
-####4) Generación de grafo, collective influence y búsqueda de caminos.
+#### 4) Generación de grafo, collective influence y búsqueda de caminos.
 
 
 **IMPORTANTE**: A partir de este punto se deben realizar todos los pasos por cada edición de festival que se desee calcular. Los pasos anteriores se realizan cada vez que se quiera actualizar la base de datos usando *dumps* de datos más actuales.
 
 
-#####Generación de CSV de artistas invitados
+##### Generación de CSV de artistas invitados
 Para generar dicho CSV se desarrolló el programa [artist_finder_app](https://bitbucket.org/bigdata_famaf/tesis_illak/src/master/artist_finder_app/)
 el cual busca artistas por nombre en las distintas fuentes de datos.
 
@@ -275,7 +276,7 @@ files/db/transformed/final/
 En el caso de que se opte por no actualizar la BD Target usar el directorio por defecto como se usa en los siguientes programas.
 
 
-#####Creación del grafo y cálculo de CI:
+##### Creación del grafo y cálculo de CI:
 
 Una vez realizada la unificación de datos se procede con la construcción del grafo que represente las relaciones entre artistas.
 Este es el grafo de **toda** la BD Target y el objetivo de los siguientes programas es filtrar información relevante del mismo para cada edición.
@@ -316,7 +317,7 @@ $ ./build_graph.sh
 ---
 
 
-#####Búsqueda de caminos
+##### Búsqueda de caminos
 
 A continuación se procede con la búsqueda de caminos más cortos (*shortests paths*) partiendo de artistas invitados hacia artistas relevantes. Para esto se usará el programa que se encuentra en [graph/path_computing/](https://bitbucket.org/bigdata_famaf/tesis_illak/src/master/graph/path_computing/).
 Antes de ejecutar el script *run_bfs.sh* se debe modificar el mismo especificando directorio del grafo:
@@ -353,7 +354,7 @@ Ejecutar el script:
 $ ./run_bfs.sh
 ```
 
-#####Asignación de rankings a caminos
+##### Asignación de rankings a caminos
 
 Finalmente se procede con la asignación de valores de importancia a los caminos encontrados, esto con la finalidad de que en la etapa de visualización se muestren únicamente aquellos que se consideran más relevantes.
 El programa encargado de esto es el que se encuentra en [graph/path_ranking/](https://bitbucket.org/bigdata_famaf/tesis_illak/src/master/graph/path_ranking/).
@@ -385,7 +386,7 @@ $ ./run_rankings.sh
 
 ---
 
-####5) Visualización
+#### 5) Visualización
 
 **NOTA**: existe un script encargado de realizar todos los pasos de ejecución que se describen a continuación. Ver readme en: [pipeline/](https://bitbucket.org/bigdata_famaf/tesis_illak/src/master/pipeline/) 
 
