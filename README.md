@@ -25,6 +25,10 @@ El trabajo tendrá como resultado final la implementación de un portal web para
 
 http://www.famaf.unc.edu.ar/~ilz0111/tesina/viz/
 
+### Implementación en la edición 2018 del CBA Jazz Festival.
+
+http://cordobajazzfestival.com.ar/2018/wp-content/uploads/sites/10/2018/relacion_artistas/
+
 ---
 ### Estructura de directorios
 
