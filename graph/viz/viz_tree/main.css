@@ -1,0 +1,42 @@
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+h4 {
+  color: #81b900;
+}
+
+
+/* Left Container */
+
+.main-container {
+  /*overflow: hidden;*/
+  height: auto;
+  background-color: #F6F6F6;
+}
+
+.left {
+  float: none;
+  width: auto;
+  overflow: hidden;
+}
+
+
+.overlay{
+  background-color:#FFFFFF;
+}
+
+#rightpane {
+  font-size: 15px !important;
+  float: right;
+  top: 0px;
+  right:0px;
+  width: 350px;
+  height: 100%;
+  position: relative;
+  padding: 11px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}

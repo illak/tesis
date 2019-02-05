@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redes de Músicos - Concentric Single Circle Layout</title>
+    <link rel="stylesheet" href="sp-bootstrap.min.css">
+    <link rel="shortcut icon" href="letter_j.ico" type="x-icon">
+</head>
+<body>
+    <div class="main-container">
+        <div class="right-wrapper">
+
+        <div id="right">
+
+            <div id="title">
+        
+            <img src="Jazz.png" height="50" width="120"/>
+            
+                <p align="left">Artist Network</p>
+
+                <p align="left">Se recomienda usar pantalla completa (F11)</p>
+
+        
+            <!-- <a href="javascript:void(0);"
+                    onClick="zoomCall(0.5);" style="pointer-events: all;">+</a>
+            <a href="javascript:void(0);"
+                onClick="zoomCall(-0.5);" style="pointer-events: all;">-</a> -->
+                <br>
+            
+            </div>
+
+            <div id="artistInfo" class="panel_off">
+
+            </div>
+            <div id="release_container">
+
+                    
+            </div>
+        </div>
+        </div>
+        <div id="left">
+
+            <button onclick="myFunction()">Hide/Show Menu</button>
+            <div id="menu">
+
+                <div style="float:left; margin-right: 40px;" id="legend">
+                    <h4>Artistas Relevantes</h4>
+                    <div class="input-group" id="filters">
+                            
+                    </div>
+                </div>
+                <div style="float:left; margin-right: 40px;" id="filter">
+                    <h4>Filtro</h4>
+                    <div class="input-group" id="filter_selector">
+                    </div>
+                </div>
+
+                <div style="float:left; margin-right: 40px;" id="legend" >
+                    <h4 >Año</h4><div  class="input-group" id="year_selector"></div>
+                </div>
+
+                <!--<div>
+                    <h3>Degree</h3>
+                    <div class="input-group" id="degrees"></div>
+                </div>
+                <div>
+                    <h3>Country</h3>
+                    <div class="input-group" id="countries"></div>
+                </div>-->
+                <div style="float:left; margin-right: 40px;">
+                        <h4>Rank </h4> <div class="input-group" id="rankCI" style="float:left"></div>
+                </div>
+                <div style="float:left; margin-right: 40px;">
+                    <h4>Activar coloreo de caminos</h4>
+                    <label class="switch">
+                        <input type="checkbox" id="color-activator">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div id="graph-container"></div>
+        </div>
+        <div id="clear"></div>
+    </div>
+</body>
+<meta charset="utf-8">
+<style>
+
+/* ....................................................................... */
+/* The top-right side panel and its title child */
+
+.main-container {
+  overflow: auto;
+  height: auto;
+  position: relative;
+    
+  /*background-color: #F6F6F6;*/
+
+}
+
+#clear {
+  clear: both;
+  height: 1px;
+  overflow: hidden;
+  font-size: 0pt;
+  margin-top: -1px;
+}
+
+#graph-container {
+    position: relative;
+    height: 100%;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#menu{
+    height: 20%;
+    overflow: hidden;
+}
+
+#left {
+  width: 80%;
+  height: 100%;
+  background-color:#FFFFFF;
+  padding: 11px;
+  float: left;
+  position: relative;
+}
+
+.overlay{
+  background-color:#FFFFFF;
+}
+
+.right-wrapper {
+	width: 20%;
+	float: right;
+}
+
+#right {
+  font-size: 15px !important;
+  width: 20%;
+  height: 100%;
+  padding: 11px;
+  background-color: #F6F6F6;
+  position: absolute;
+}
+
+
+
+div#artistInfo {
+    position: relative;
+    right: 4px;
+    cursor: text;
+    width: 100%;
+    z-index: 1000;
+    background: #E5E4D6;
+    border: solid 1px #aaa;
+    border-radius: 8px;    
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10px;    
+    padding: 4px;
+    text-align: right;
+}
+
+div#artistInfo div#cover {
+    text-align: left; 
+    height: 300px;
+}
+
+div#artistInfo div.t {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+div#artistInfo img.cover {
+    margin-bottom: 6px;
+    position: absolute;
+    right: 3px;
+}
+
+div#artistInfo img.action {
+    cursor: pointer;
+    position: absolute;
+}
+
+div#artistInfo div.f {
+    border-top: 1px dotted #8E5981;
+    margin-bottom: 3px;
+    margin-top: 3px;
+}
+
+div#artistInfo span.d {
+    font-weight: bold;
+}
+
+div#artistInfo span.c {
+    font-style: italic;
+}
+
+div#artistInfo span.l {
+    font-size: 11px;
+    color: #24553E;
+    font-variant: small-caps;
+}
+
+div.panel_off {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+div.panel_on {
+    visibility: visible;
+    pointer-events: all;
+}
+
+
+
+h4 {
+  color: #81b900;
+  font-size: 21px;
+}
+
+
+div#title {
+    margin: 4px 2px 6px 0px;
+    border-width: 0px;
+    padding: 0px;
+    text-align: left;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    line-height: 18px;
+    color: #5D1D4D;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+div#title img {
+    border-width: 0px;
+    margin: 0px;
+}
+
+.nodes2:not(:hover) .nodetext {
+    display: none;
+}
+
+.nodes2.show-text .nodetext {
+    text-decoration: underline;
+    stroke: black;
+    stroke-width: 0.3px;
+    opacity: 0.9;
+    display: inline;
+}
+
+
+.nodes2.hidden-node {
+    /*fill: red;*/
+    fill: #732A9A;
+    fill-opacity: 0;
+    visibility: hidden;
+}
+
+.nodes2.nodeimage {
+    /*fill: red;*/
+    fill: none;
+    fill-opacity: 0.2;
+}
+
+.node-link-yes {
+    fill: none;
+    stroke: yellow;
+    stroke-width: 2px;
+
+}
+
+.node-link-yes-2 {
+    
+    stroke: blue;
+}
+
+.node-link-no {
+    /*fill: none;*/
+    stroke: #bbb;
+    stroke-width:4px;
+    opacity:0.4;
+}
+
+.node-link-no.hovered {
+    stroke:#E72E3D !important;
+    stroke-opacity:1;
+    stroke-width:6
+}
+
+.link-no-color {
+    fill: none;
+    stroke: #bbb;
+    stroke-width: 4px;
+    opacity:0.4;
+}
+
+.link-hide {
+    opacity: 0;
+    cursor: none;
+    pointer-events: none;
+}
+
+.nodeimage.hidden-image {
+
+    visibility: hidden;
+
+}
+
+.circle {
+
+    stroke: #ff0000;
+}
+.circle2 {
+
+    stroke: #ff0000;
+}
+
+div.tooltip {   
+  position: absolute;           
+  text-align: left;               
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: lightsteelblue;   
+  border: 0px;      
+  border-radius: 8px;           
+}
+
+.spinner {
+    position:absolute !important;
+    content: "Email address: ";
+}
+
+/*======================================================*/
+ /* The switch - the box around the slider */
+ .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+} 
+
+/*======================================================*/
+
+a:link { color: #EE3124; text-decoration: none;}
+a:visited { color: #EE3124; }
+a:hover { color: #A4CD39; text-decoration: underline;}
+a:active { color: #EE3124; }
+
+</style>
+<!--<svg width="960" height="600"></svg>-->
+<!--<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="d3.slider.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.min.js'></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://d3js.org/colorbrewer.v1.min.js"></script>-->
+<script type="text/javascript" src="d3.min.js"></script>
+<script src="d3.slider.js"></script>
+<script type="text/javascript" src="spin.min.js"></script>
+<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="colorbrewer.min.js"></script>
+
+<script>
+
+    function myFunction() {
+        var x = document.getElementById("menu");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+
+
+    d3.selection.prototype.moveToFront = function() {
+    return this.each(function(){
+        this.parentNode.appendChild(this);
+    });
+    };
+
+    d3.selection.prototype.moveToBack = function() { 
+       this.each(function() { 
+            this.parentNode.firstChild
+              && this.parentNode.insertBefore(this, firstChild); 
+        });
+    };
+
+    var margin = {top: 20, right: 120, bottom: 20, left: 120},
+    width = screen.width,
+    height = screen.height;
+
+    // Some constants
+    var WIDTH =  screen.width,
+        HEIGHT = screen.height,
+        SHOW_THRESHOLD = 2.5;
+
+    var svg = d3.select("#graph-container")
+            .append("svg")
+            .attr("width",  "100%")
+            .attr("height", height )
+            .attr("class", "overlay");
+
+    var g = svg.append("g")//.attr("transform", "translate(" + -150 + "," + 0 + ")");
+
+    // ZOOM PARAMETERS
+    var min_zoom = 0.05;
+    var max_zoom = 7;
+    var zoom = d3.zoom()
+                .scaleExtent([min_zoom,max_zoom])
+                .on("zoom", zoomed);
+
+    //Para cancelar el zoom con dobleclick (para evitar problemas con eventos)
+    svg.call(zoom)
+        .on("dblclick.zoom", null);
+
+    var transform = d3.zoomIdentity
+                    //.translate(WIDTH / 4, HEIGHT / 4)
+                    .scale(0.9);
+                    
+    svg.call(zoom.transform, transform);
+
+
+     var toggleDiv = function( id, status ) {
+        d = d3.select('div#'+id);
+        if( status === undefined )
+        status = d.attr('class') == 'panel_on' ? 'off' : 'on';
+        d.attr( 'class', 'panel_' + status );
+        d.selectAll("div").remove();
+        return false;
+    }
+
+    // ========================= SELECT ===========================
+
+
+    d3.csv("years.csv", function(data){
+        //console.log(data);
+        //console.log(typeof(data[0].year));
+        //console.log(data.map(function(d) {return d.year}))
+
+        json = "ED" +  data[0].year + "_RANKCI.json";
+
+        
+
+        // Agregar los años de los JSON en el directorio
+        var data_year = data.map(function(d) {return d.year})
+
+        var select_json = "relevant_selector.json";
+        var data_filter = ["ci", "cii"];
+
+
+
+
+        var data = undefined;
+        var RID_MAP = new Map();
+        var ID_MAP = new Map();
+
+        
+
+        d3.json(select_json, function(error, select_data) {
+
+            data = select_data.relevants.map(function(x) {
+                return x.name;
+            });
+
+            select_data.relevants.map(function(x){
+                RID_MAP.set(x.name, x.path_rel_id);
+            });
+
+            select_data.relevants.map(function(x){
+                ID_MAP.set(x.name, x.id);
+            });
+
+
+            // SELECTOR DE AÑO
+            var select_year = d3.select('#year_selector')
+                .append('select')
+                .attr('class','select')
+                //.property("selected", function(d){ refresh() })
+                .on('change',onchange)
+
+            var options_year = select_year
+                .selectAll('option')
+                .data(data_year).enter()
+                .append('option')
+                .text(function (d) { return d; });
+
+            var select = d3.select('#filters')
+                .append('select')
+                .attr('class','select')
+                //.property("selected", function(d){ refresh() })
+                .on('change',onchange)
+
+            var options = select
+                .selectAll('option')
+                .data(data).enter()
+                .append('option')
+                .text(function (d) { return d; });
+
+            var select_filter = d3.select('#filter_selector')
+                .append('select')
+                .attr('class','select')
+                //.property("selected", function(d){ refresh() })
+                .on('change',onchange)
+
+            var options_filter = select_filter
+                .selectAll('option')
+                .data(data_filter).enter()
+                .append('option')
+                .text(function (d) { return d; });
+
+            // loader settings
+            var opts = {
+                lines: 9, // The number of lines to draw
+                length: 9, // The length of each line
+                width: 5, // The line thickness
+                radius: 14, // The radius of the inner circle
+                color: '#EE3124', // #rgb or #rrggbb or array of colors
+                speed: 1.9, // Rounds per second
+                trail: 40, // Afterglow percentage
+                className: 'spinner', // The CSS class to assign to the spinner
+            };
+            // SPINNER
+            var spinner = new Spinner(opts)
+
+            var json;
+
+
+            function onchange() {
+
+                var selectedName = select.property('value');
+                var selectedFilter = select_filter.property('value');
+                var selectYear = select_year.property('value')
+
+                var path_id = RID_MAP.get(selectedName);
+                var r_id = ID_MAP.get(selectedName);
+
+                if(selectedFilter == "cii"){
+                    d3.json("ED"+selectYear+"_BY_RELEVANT_rank_cii.json", function(error, select_data) {
+                        json = select_data.jsons.filter(function(j) {
+                            return j.path_rel_id == path_id;
+                        })[0];
+
+                        svg.selectAll("*").remove();
+
+                        var loading = svg.append("text")
+                            .attr("x", width / 2)
+                            .attr("y", height / 2)
+                            .attr("dy", ".35em")
+                            .style("text-anchor", "middle")
+                            .text("Simulating. One moment please…");
+
+                        // trigger loader
+                        var target = document.getElementById('graph-container');
+                        spinner.spin(target);
+
+                        refresh(path_id, r_id)
+                    });
+                }else{
+                    d3.json("ED"+selectYear+"_BY_RELEVANT_rank_ci.json", function(error, select_data) {
+                        json = select_data.jsons.filter(function(j) {
+                            return j.path_rel_id == path_id;
+                        })[0];
+
+                        svg.selectAll("*").remove();
+
+                        var loading = svg.append("text")
+                            .attr("x", width / 2)
+                            .attr("y", height / 2)
+                            .attr("dy", ".35em")
+                            .style("text-anchor", "middle")
+                            .text("Simulating. One moment please…");
+
+                        // trigger loader
+                        var target = document.getElementById('graph-container');
+                        spinner.spin(target);
+
+                        refresh(path_id, r_id)
+                    });
+                }
+
+            };
+
+            
+
+        
+        function update() {
+            //circle.remove();
+            //g.remove();
+            svg.remove();
+
+            svg = d3.select("#graph-container").append("svg")
+                .attr("width",  "100%" )
+                .attr("height", height )
+                .attr("class", "overlay");
+
+            //Para cancelar el zoom con dobleclick (para evitar problemas con eventos)
+            svg.call(zoom)
+                .on("dblclick.zoom", null);
+
+            var transform = d3.zoomIdentity
+                            //.translate(WIDTH / 4, HEIGHT / 4)
+                            .scale(1);
+                            
+            svg.call(zoom.transform, transform);
+
+
+
+            //Drawing some circles
+            g = svg.append("g")//.attr("transform", "translate(" + -150 + "," + 0 + ")");
+            var n_circles = 5
+            
+            for(i = 0;i<5; i++){           
+                var dim = 150 * (i+1) 
+                var circle = g.append("circle")
+                        .attr("class", "circle"+i)
+                        .attr("cx", "50%")
+                        .attr("cy", "50%")
+                        .attr("r", dim)
+                        .style("fill", "none")
+                        .style("stroke", "black")
+                        ;
+            }
+        }
+        // =============================================================
+
+    /*
+        var dataDeg = ["ALL", "HIGH", "MEDIUM", "LOW"];
+        var selectDeg = d3.select('#degrees')
+            .append('select')
+            .attr('class','select');
+
+        var optionsD = selectDeg
+            .selectAll('option')
+            .data(dataDeg).enter()
+            .append('option')
+            .text(function (d) { return d; });
+
+
+        var selectCountry = d3.select("#countries")
+            .append('select')
+            .attr('class','select');
+
+        var optionsC = selectCountry
+            .selectAll('option');
+    */
+
+        var ranksCIdata = [1,2,3,4,5]
+                    
+        var selectCI = d3.select('#rankCI')
+            .append('select')
+            .attr('class','select');
+
+        var optionsCI = selectCI
+            .selectAll('option')
+            .data(ranksCIdata).enter()
+            .append('option')
+            .text(function (d) { return d; });
+
+        // NEW DIV TO SHOW RELEASES
+        var div = d3.select("body").append("div")   
+                        .attr("class", "tooltip")               
+                        .style("opacity", 0);
+
+        function createTooltip(d){
+            //get node data, manage missing values
+            div.transition()        
+                .duration(10)
+                .style("opacity", .9);
+
+            var s = ""
+            s = s + "<p><h4>"+d.source.name+"--->"+d.target.name+"</h4></p>"
+            for(i=0;i<d.releases.length;i++){
+                s += '<tr><td><a target="_blank" href="https://www.discogs.com/release/'+d.releases[i]+'" style="display:block" >' + d.releases[i] + '</a></td></tr>'
+            }
+
+            
+            div.html("<table>" + s + "</table>")
+            .style("left", (d3.event.pageX) + "px")     
+            .style("top", (d3.event.pageY - 28) + "px");
+        }
+
+        var releasesDiv = d3.select("#release_container");
+
+        function createDiv(d){
+            d3.select("#release_container").selectAll("*").remove();
+
+            releasesDiv.append("h4")
+                .text("releases entre:")
+
+            releasesDiv
+                .append("p")
+                .text(d.source.name + " <--> "+ d.target.name)
+
+            /*for(i=0;i<d.releases.length;i++){
+                $.getJSON("https://api.discogs.com/releases/"+d.releases[i], function(data) {
+                    releasesDiv
+                            .append("div")
+                            .html('<a target="_blank" href="' + data.uri + '" style="display:block" >' + data.title + '</a>')
+                            //.text(data.title)
+
+                })
+            }*/
+            for(i=0;i<d.releases.length;i++){
+
+                var link = "https://www.discogs.com/release/" + d.releases[i]
+                var title = d.titles[i]
+                var image = "images/releases/" + d.images[i]
+
+                releasesDiv
+                    .append("div")
+                    .html('<a target="_blank" href="' + link  + '" style="display:block" >' + title + '</a>')
+                    //.text(data.title)
+                
+                releasesDiv
+                    .append('img')
+                    .attr('class', 'picture')
+                    .attr('src', image)
+                    .attr('height', '100')
+                    .attr('width', '100');
+
+                releasesDiv
+                    .append('hr')
+
+            }
+
+        }
+
+        var fill = d3.scaleOrdinal(d3.schemeCategory20).domain(d3.range(0, 20));
+
+        onchange();
+
+
+    
+        function refresh(path_id, r_id){
+
+            artistInfoDiv = d3.select("#artistInfo");
+
+
+            function getArtistInfo( n ) {
+                info = '<div id="cover">';
+                if( n.image )
+                info += '<img class="cover" height="300" width="200" src="' + "images/artists/" + n.image + '" title="' + n.name + '"/>';
+                else
+                info += '<div class=t style="float: right">' + n.name + '</div>';
+                info +=
+                '<img src="close.png" class="action" style="top: 0px;" title="close panel" onClick="toggleDiv(\'artistInfo\');"/>' 
+                info += '<br/></div><div style="clear: both;">'
+                if( n.citizenships.length > 0 ){
+                    info += '<div class=f><span class=l>Nacionalidades</span>: ' ;
+                        info += n.citizenships.map( function(n){
+                            return "<span class=g>"+ n + " </span>"
+                        }).join(' - ');
+                    '</div>';
+                }
+                else{
+                    info += '<div class=f><span class=l>Nacionalidades</span>: ' ;
+                    info += 'no info';
+                    '</div>';
+                }
+                if( n.instruments.length > 0 ){
+                    info += '<div class=f><span class=l>Instrumentos</span>:';
+                        info += n.instruments.map( function(n){
+                            return "<span class=g>"+ n + " </span>"
+                        }).join(' - ');
+                    '</div>';
+                }
+                else{
+                    info += '<div class=f><span class=l>Instrumentos</span>: ' ;
+                    info += 'no info';
+                    '</div>';
+                }
+                if( n.mbLink )
+                info += '<div class=f><span class=l>Musicbrainz link</span>:' +
+                    '<a target="_blank" href="'+ n.mbLink + '" style="display:block" >' + n.mbLink + '</a></div>';
+                if( n.wikiLink )
+                info += '<div class=f><span class=l>Wikidata link</span>:' +
+                    '<a target="_blank" href="'+ n.wikiLink + '" style="display:block" >' + n.wikiLink + '</a></div>';
+                if( n.id )
+                info += '<div class=f><span class=l>Discogs link</span>:' +
+                    '<a target="_blank" href="https://www.discogs.com/artist/'+ n.id + '" style="display:block" >https://www.discogs.com/artist/' + n.id + '</a></div>';
+                if( n.duration )
+                info += '<div class=f><span class=l>Year</span>: ' + n.year 
+                    + '<span class=l style="margin-left:1em;">Duration</span>: ' 
+                    + n.duration + '</div>';
+                if( n.links ) {
+                info += '<div class=f><span class=l>Related to</span>: ';
+                n.links.forEach( function(idx) {
+                info += '[<a href="javascript:void(0);" onclick="selectMovie('  
+                    + idx + ',true);">' + nodeArray[idx].label + '</a>]'
+                });
+                info += '</div>';
+                }
+                return info;
+            }
+
+
+
+            function showArtistPanel( node ) {
+                // Fill it and display the panel
+                artistInfoDiv
+                .html( getArtistInfo(node) )
+                .attr("class","panel_on");
+            }
+
+
+
+            var lwidth = document.getElementById('left').offsetWidth;
+            //var lheight = document.getElementById('left').offsetHeight;
+
+            
+
+
+            /* --------------------------------------------------------------------- */
+            function color(level){
+                if(level == "other"){
+                    return "#26455f"
+                }
+                if(level == "relevant"){
+                    return "green"
+                }
+                else return "orange"
+            }
+
+            //create worker and send message to start force graph
+            var worker = new Worker('worker.js');
+
+            worker.postMessage({json: json, width: lwidth - 22, height: height, rid: r_id});
+
+            update();
+
+            worker.onmessage = function(msg){
+
+                // Detenemos el spinner
+                spinner.stop()
+
+
+                d3.select("#color-activator")
+                .property("checked", false)
+                .on("change", changeColor);
+            
+            var link = g.append("g")
+                    .selectAll("path")
+                    .data(msg.data.links)
+                    .enter().append("svg:line")
+                    .classed("node-link-no", true)
+                    .style("cursor", "pointer")
+                    .on("click", function(d){createDiv(d);});
+
+            var node = g.append("g")
+                    .attr("class", "nodes")
+                    .selectAll("g")
+                    .data(msg.data.nodes)
+                    .enter().append("g")
+                    .attr('id', function(d) { return "c" + d.index; } )
+                    .attr("class", "nodes2")
+                    .style('transform-origin', '50% 50%')
+                    .style("cursor", "pointer")
+                    .on("mouseover", function(d) { highlightGraphNode(d); } )
+                    .on("mouseout", function(d) { deHighlight(); filterRanks() })
+                    .on("click", function(d) { showArtistPanel(d); } );
+                    /*.call(d3.drag()
+                            .on("start", dragstarted)
+                            .on("drag", dragged)
+                            .on("end", dragended));*/ // DESCOMENTAR PARA ACTIVAR ARRASTRE DE NODOS
+
+
+                // add hovered behavior on linnk
+                svg.selectAll(".node-link-no")
+                    .on("mouseover", function(d) {
+                        var sel = d3.select(this);
+                        sel.classed("hovered",true);
+                    })
+                    .on("mouseout", function() {
+                        var sel = d3.select(this);
+                        sel.classed("hovered",false);
+                    });
+
+
+                var max = d3.max(msg.data.nodes, function(d) { return d.degree_origin; });
+                var min = d3.min(msg.data.nodes, function(d) { return d.degree_origin; });
+
+                var radius = d3.scaleSqrt()
+                    .domain([min,max+100])
+                    .range([6, 12]);
+
+
+                // In theory is the fastest way to find a max value in javascript...
+                function findMaxLevel(arr) {
+                    let max = Math.max.apply(Math, arr[0].levels);
+                
+                    for (let i = 1, len=arr.length; i < len; i++) {
+                    let v = Math.max.apply(Math, arr[i].levels);
+                    max = (v > max) ? v : max;
+                    }
+                
+                    return max+1;
+                }
+
+                var maxLevel = findMaxLevel(msg.data.nodes);
+
+                function setDistance(d){
+                    var size = d.levels.length
+                                    
+                    if(d.class == "relevant"){
+                        return maxLevel - d.levels[0] + 1
+                    }
+                    else if(d.class == "guest"){
+                        return maxLevel - d.levels[size-1] + 1
+                    }
+                    else{
+                        return 1
+                    }
+                }
+
+                function degreeF(node){
+                /* if(node.class == "guest"){
+                        return max+100
+                    }
+                    else if(node.class == "relevant"){
+                        return max+100
+                    }
+                    else return node.degree_origin*/
+                    return setDistance(node) * 7
+                }
+
+                //función que vuelve todo a la normalidad
+                function deHighlight() {
+                    link.classed("node-link-no", true);
+                    link.classed("link-hide", false);
+                    //link.classed("node-link-yes-2", false);
+                    node.classed("hidden-node", false);
+                    node.classed("show-text", false);
+                    images.classed("hidden-image", false);                
+                }
+
+
+
+                function contains_node(list, node){
+                    return list.includes(node.index)
+                }
+
+                function highlightGraphNode(d){                
+                    var selectedRank = selectCI.property('value')
+                    var selectedFilter = select_filter.property('value')
+
+
+                    if(selectedFilter == "ci"){
+                        var srcNodesInRank = d3.set(msg.data.links.filter(l => l.rank_ci <= selectedRank), function(d){ return d.source.index}).values();
+                        var trgNodesInRank = d3.set(msg.data.links.filter(l => l.rank_ci <= selectedRank), function(d){ return d.target.index}).values();
+                    }else{
+                        var srcNodesInRank = d3.set(msg.data.links.filter(l => l.rank_cii <= selectedRank), function(d){ return d.source.index}).values();
+                        var trgNodesInRank = d3.set(msg.data.links.filter(l => l.rank_cii <= selectedRank), function(d){ return d.target.index}).values();
+                    }
+
+                    var nodesInRank = srcNodesInRank.concat(trgNodesInRank).map(Number)
+                    var nodesInRankInPath = d["links"+selectedRank].filter(i => nodesInRank.includes(i));
+
+
+                    //ocultamos nodos que no estan en el camino
+                    node.classed("hidden-node", function(n) {
+                        return !(contains_node(nodesInRankInPath, n));
+                    });
+
+                    node.classed("show-text", function(n) {
+                        return contains_node(d["links"+selectedRank], n);
+                    });
+
+
+                    //ocultamos aristas que no nos interesan
+                    link.classed("link-hide", function(n) {
+                        if(selectedFilter == "ci"){
+                            return (n.rank_ci > selectedRank) ||
+                            (!d["links"+selectedRank].includes(n.source.index) || !d["links"+selectedRank].includes(n.target.index))
+                        }
+                        else{
+                            return (n.rank_cii > selectedRank) ||
+                            (!d["links"+selectedRank].includes(n.source.index) || !d["links"+selectedRank].includes(n.target.index))
+                        }
+                    });
+
+
+                }
+
+                function changeColor() {
+                    if(d3.select("#color-activator").property("checked")){
+                        link.style("stroke", function(d){ return fill(d.path_id); })
+                        
+                    }else{
+                        link.style("stroke", "#bbb")
+                    }
+                }
+
+                /*selectDeg
+                    .property("selected", function(d){ return d === "ALL" })
+                    .on('change',onchange2)*/
+
+                function onchange2() {
+                    var selectValue2 = selectDeg.property('value')
+                    degreeSelect(selectValue2)
+                    };
+                
+                function onchange3(){
+                    deHighlight(); 
+                    var selectValue3 = selectCountry.property('value')
+                    if (selectValue3 == "ALL"){
+                        deHighlight();
+                    }else{
+                        //ocultamos nodos que no estan en el rango
+                        node.classed("hidden-node", function(n) {
+                                return ! ( n.citizenships[0] == selectValue3);
+                            });
+
+                        //ocultamos imagenes
+                        images.classed("hidden-image",function(n) {
+                            return ! ( n.citizenships[0] == selectValue3);
+                        });
+
+                        //hacemos invisible a las aristas
+                        link.classed("node-link-no", false);
+                        }
+
+                }
+
+                function filterRanks(){
+                    deHighlight();
+
+                    var selectedRank = selectCI.property('value')
+                    var selectedFilter = select_filter.property('value')
+
+                    if(selectedFilter == "ci"){
+                        var srcNodesInRank = d3.set(msg.data.links.filter(l => l.rank_ci <= selectedRank), function(d){ return d.source.index}).values();
+                        var trgNodesInRank = d3.set(msg.data.links.filter(l => l.rank_ci <= selectedRank), function(d){ return d.target.index}).values();
+                        
+                    }
+                    else{
+                        var srcNodesInRank = d3.set(msg.data.links.filter(l => l.rank_cii <= selectedRank), function(d){ return d.source.index}).values();
+                        var trgNodesInRank = d3.set(msg.data.links.filter(l => l.rank_cii <= selectedRank), function(d){ return d.target.index}).values();
+                    }
+                
+                    var nodesInRank = srcNodesInRank.concat(trgNodesInRank)
+
+                    // ocultamos aristas
+                    link.classed("link-hide",  function(n) {
+                        if(selectedFilter == "ci"){
+                            return n.rank_ci > selectedRank 
+                        }
+                        else{
+                            return n.rank_cii > selectedRank 
+                        }
+                    });
+
+                    // ocultamos nodos que no estan en los caminos del rango seleccionado
+                    node.classed("hidden-node", function(n){
+                        return !nodesInRank.includes(n.index.toString())
+                    })
+
+                    // mostramos nombre de los artistas relevantes e invitados
+                    node.classed("show-text", function(n){
+                        return n.class == "guest" || n.class == "relevant"
+                    });
+
+                }
+
+                // Obtenemos paises
+                //var dataCountry = ["ALL"].concat(d3.set(msg.data.nodes, function(d) { return d.citizenships[0]; }).values());
+
+                // removemos opciones si hay
+                //selectCountry.selectAll('option').remove();
+
+                /*optionsC
+                    .data(dataCountry).enter()
+                    .append('option')
+                    .text(function (d) { return d; });
+
+                selectCountry
+                    .property("selected", function(d){ return d === "ALL" })
+                    .on('change',onchange3)*/
+
+
+
+
+                // Selector de ranks CI            
+                selectCI
+                    .property("selected", function(d){ return d === 1; })
+                    .on('change', filterRanks);
+
+
+                //=========================================================================
+
+                var node_circle = node.append('circle')
+                            .attr("stroke", function(d) { return color(d.class); })
+                            .attr("r", function(d) { return setDistance(d) * 6; })
+                            .attr("fill", function(d) { return color(d.class); });
+
+                var node_circle2 = node.append('circle')
+                            //.attr("stroke", function(d) { return threshold(d.cc); })
+                            .attr("r", function(d) { return setDistance(d) * 7; })
+                            .attr("stroke-width", 2)
+                            .attr("fill", "none");
+
+
+                var tcBlack = "#130C0E";
+
+                var nodetext = node.append("text")
+                    .attr("class", "nodetext")
+                    .attr("x", 0)
+                    .attr("y", function(d){ return setDistance(d) * 7 + 5 })
+                    .attr("text-anchor", "middle")
+                    .attr("fill", tcBlack)
+                    .text(function(d) { return d.name; });
+
+                //images=============================================
+                // Append images
+
+                var clip_path = node.append("clipPath")
+                    .attr("id", function(d){ return "clipCircle" + d.index; })
+                        .append("circle")
+                        .attr("r", function(d) { return setDistance(d) * 5; })
+
+
+
+                var images = node.append("image")
+                        /*.attr('xlink:href',function(d){
+                        return d.image + "?width=" + parseInt(setDistance(d) * 5 * 5)) + "&height=" + parseInt(setDistance(d) * 5 * 7)) + "&crop=1%3A1"
+                        })*/
+                        .attr('xlink:href',function(d){
+                        return "images/artists/" + d.image})
+                        .attr("class", "nodeimage")
+                        .attr("x", function(d) { return -setDistance(d) * 5 ;})
+                        .attr("y", function(d) { return -setDistance(d) * 5 ;})
+                        .attr('height', function(d) { return setDistance(d) * 5 * 2; })
+                        .attr('width', function(d) { return setDistance(d) * 5 * 2; })
+
+                        .attr("clip-path", function(d){return "url(#clipCircle" + d.index +")"});
+
+
+
+                node.on("mouseenter",  function(d) {
+                                var rad;
+                                if(d.class == "relevant"){                
+                                    rad = setDistance(d) * 7
+                                }else{
+                                    rad = 34
+                                }
+                                //Node circle
+                                d3.select( this.childNodes[0] )
+                                .attr("r", rad);
+
+                                //Node circle2
+                                d3.select( this.childNodes[1] )
+                                .attr("r", rad + 1)
+
+                                //clipPath Circle
+                                d3.select( this.childNodes[3].childNodes[0] )
+                                .attr("r", rad - 1);
+
+                                //image
+                                d3.select( this.childNodes[4] )
+                                .attr("x", -rad )
+                                .attr("y", -rad )
+                                .attr('height', rad * 2)
+                                .attr('width', rad * 2);
+
+                                //text                            
+                                d3.select( this.childNodes[2] )
+                                .attr("y", rad + 1 + 10);
+                            })
+                            .on("mouseleave",  function() {
+                                //Node circle
+                                d3.select( this.childNodes[0] )
+                                    .attr("r", function(d) { return setDistance(d) * 6; });
+
+                                //Node circle2
+                                d3.select( this.childNodes[1] )
+                                    .attr("r", function(d) { return setDistance(d) * 7; })
+
+                                //clipPath Circle
+                                d3.select( this.childNodes[3].childNodes[0] )
+                                    .attr("r", function(d) { return setDistance(d) * 5; });
+
+                                //image
+                                d3.select( this.childNodes[4] )
+                                    .attr("x", function(d) { return -setDistance(d) * 5 ;})
+                                    .attr("y", function(d) { return -setDistance(d) * 5 ;})
+                                    .attr('height', function(d) { return setDistance(d) * 5 * 2; })
+                                    .attr('width', function(d) { return setDistance(d) * 5 * 2; });
+
+                            });
+
+
+                node.call(filterRanks)
+
+                //use this one for straight line links...
+                link
+                    .attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+                node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+                            
+                worker.terminate();
+            }
+
+        }
+        
+
+   
+    });
+
+
+
+})
+    function dragstarted(d) {
+    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+    }
+
+    function dragged(d) {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+    if (!d3.event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+    }
+
+    function zoomed() {
+        g.attr("transform", d3.event.transform);
+    // Manually offsets the zoom to compensate for the initial position. Should get fixed asap or the position variables made global.
+    //svg.attr("transform", "translate(" + (d3.event.transform.x + 400) + "," + (d3.event.transform.y + 325) + ")scale(" +  d3.event.transform.k + ")");
+    }
+
+
+</script>

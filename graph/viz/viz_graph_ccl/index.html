@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redes de Músicos - Concentric Circle Layout</title>
+    <link rel="stylesheet" href="sp-bootstrap.min.css">
+    <link rel="shortcut icon" href="letter_j.ico" type="x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="right-wrapper">
+        <div id="right">
+
+            <div id="title">
+        
+            <img src="Jazz.png" height="50" width="120"/>
+            
+                <p align="left">Artist Network</p>
+
+                <p align="left">* Haga click en un nodo para ver los caminos que lo atraviesan.</p>
+                <p align="left">* Presione la tecla ESC para volver atás.</p>
+                <p align="left">* Se recomienda usar pantalla completa (F11)</p>
+
+
+
+        
+            <!-- <a href="javascript:void(0);"
+                    onClick="zoomCall(0.5);" style="pointer-events: all;">+</a>
+            <a href="javascript:void(0);"
+                onClick="zoomCall(-0.5);" style="pointer-events: all;">-</a> -->
+                <!--<br>
+                <p align="left">* Pasar el mouse por encima de un nodo para visualizar caminos.</p>
+                <p align="left">* Los caminos en amarillo son los caminos con valor de rank menor o igual al seleccionado.</p>
+                <p align="left">* Los caminos en azul son los caminos con valor de rank mayor al seleccionado</p>
+                <p align="left">* Pasar el mouse por encima de una arista par visualizar los releases que tienen en común los artistas que conectan.</p>-->
+            </div>
+               <!-- <div id="map"></div>
+                <div id="legend">
+                    <h4>Filtro</h4>
+                    <div class="input-group" id="filter_selector">
+                    </div>
+                </div>
+                <div id="metric_container">
+                    <h4>Node metric</h4>
+                    <div class="input-group" id="metric_selector">
+                    </div>
+                </div>
+
+                <div>
+                    <h4>Link force strength</h4>
+                    <input style="width:240px;" type="range" min="0" max="1" step="any" value="0.5">value = <span id="link-str-val">…</span>
+                </div>
+            -->
+                <!-- Rounded switch -->
+               <!-- <div>
+                    <h4>Activate colors</h4>
+                    <label class="switch">
+                        <input type="checkbox" id="color-activator">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div>
+                    <div style="float:left">Rank value &#8806; &nbsp; &nbsp;  </div> <div class="input-group" id="rank_selector" style="float:left"></div>
+                </div>-->
+                <!--<div>
+                    <h3>Degree</h3>
+                    <div class="input-group" id="degrees"></div>
+                </div>
+                <div>
+                    <h3>Country</h3>
+                    <div class="input-group" id="countries"></div>
+                </div>-->
+
+                 
+                <br>
+                <br>
+                <div id="artistInfo" class="panel_off">
+
+                </div>
+                <div id="release_container">
+
+                    
+                </div>
+        </div>
+        </div>
+        <div id ="left">
+            <button onclick="myFunction()">Hide/Show Menu</button>
+
+            <div id="menu" style="border-style: none none solid none;">
+
+                <div style="float:left; margin-right: 40px;" id="legend" >
+                    <h4 >Filtro</h4><div  class="input-group" id="filter_selector"></div>
+                </div>
+                <div style="float:left; margin-right: 40px;" id="legend" >
+                    <h4 >Año</h4><div  class="input-group" id="year_selector"></div>
+                </div>
+                <div style="float:left; margin-right: 40px;" id="metric_container">
+                    <h4 >Node metric</h4> <div class="input-group" id="metric_selector"></div>
+                </div>
+                <!-- Rounded switch -->
+                <div style="float:left; margin-right: 40px;">
+                    <h4 >Activate colors</h4> <label class="switch">
+                            <input type="checkbox" id="color-activator">
+                            <span class="slider round"></span>
+                        </label>
+                </div>
+                <div style="float:left; margin-right: 40px;">
+                    <h4>Rank </h4> <div class="input-group" id="rank_selector" style="float:left"></div>
+                </div>
+                <div style="float:left; margin-right: 40px;">
+                    <h4>Link force strength</h4>
+                    <input style="width:240px;" type="range" min="0" max="1" step="any" value="0.5">value = <span id="link-str-val">…</span>
+                </div>
+                <div style="float:left; margin-right: 40px;text-align: center;">
+                        <h4>Restart simulation</h4>
+                        <button id="restart-sim" type="button"><i class="fa fa-refresh"></i></button></p>
+                </div>
+            </div>
+            <div id="graph-container"></div>
+
+
+        </div>
+        <div id="clear"></div>
+    </div>
+</body>
+<meta charset="utf-8">
+<style>
+
+/* ....................................................................... */
+/* The top-right side panel and its title child */
+
+.main-container {
+  overflow: auto;
+  height: auto;
+  position: relative;
+    
+  /*background-color: #F6F6F6;*/
+
+}
+
+#release_container {
+    height: 300px;
+    overflow-y: auto;
+}
+
+#clear {
+  clear: both;
+  height: 1px;
+  overflow: hidden;
+  font-size: 0pt;
+  margin-top: -1px;
+}
+
+#graph-container {
+    height: 100%;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#menu{
+    height: 20%;
+    overflow: hidden;
+}
+
+#left {
+  width: 80%;
+  height: 100%;
+  background-color:#FFFFFF;
+  padding: 11px;
+  float: left;
+  position: relative;
+}
+
+.overlay{
+  background-color:#FFFFFF;
+}
+
+.right-wrapper {
+	width: 20%;
+	float: right;
+}
+
+#right {
+  font-size: 15px !important;
+  width: 20%;
+  height: 100%;
+  padding: 11px;
+  background-color: #F6F6F6;
+  position: absolute;
+}
+
+
+div#artistInfo {
+    position: relative;
+    right: 4px;
+    cursor: text;
+    width: 100%;
+    z-index: 1000;
+    background: #E5E4D6;
+    border: solid 1px #aaa;
+    border-radius: 8px;    
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10px;    
+    padding: 4px;
+    text-align: right;
+}
+
+div#artistInfo div#cover {
+    text-align: left; 
+    height: 400px;
+}
+
+div#artistInfo div.t {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+div#artistInfo img.cover {
+    margin-bottom: 6px;
+    position: absolute;
+    right: 3px;
+}
+
+div#artistInfo img.action {
+    cursor: pointer;
+    position: absolute;
+}
+
+div#artistInfo div.f {
+    border-top: 1px dotted #8E5981;
+    margin-bottom: 3px;
+    margin-top: 3px;
+}
+
+div#artistInfo span.d {
+    font-weight: bold;
+}
+
+div#artistInfo span.c {
+    font-style: italic;
+}
+
+div#artistInfo span.l {
+    font-size: 11px;
+    color: #24553E;
+    font-variant: small-caps;
+}
+
+div.panel_off {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+div.panel_on {
+    visibility: visible;
+    pointer-events: all;
+}
+
+
+
+
+h4 {
+  color: #81b900;
+  font-size: 21px;
+}
+
+div#title {
+    margin: 4px 2px 6px 0px;
+    border-width: 0px;
+    padding: 0px;
+    text-align: right;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    line-height: 18px;
+    color: #5D1D4D;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+div#title img {
+    border-width: 0px;
+    margin: 0px;
+}
+
+.nodes2:not(:hover) .nodetext {
+    display: none;
+
+}
+
+.nodes2.show-text .nodetext {
+    text-decoration: underline;
+    stroke: black;
+    stroke-width: 0.3px;
+    opacity: 0.9;
+    display: inline;
+}
+
+.nodes2.hidden-node {
+    /*fill: red;*/
+    fill: #732A9A;
+    fill-opacity: 0;
+    visibility: hidden;
+}
+
+.nodes2.highlight-node {
+    stroke: red;
+    stroke-width: 8px;
+}
+
+.nodes2.nodeimage {
+    /*fill: red;*/
+    fill: none;
+    fill-opacity: 0.2;
+}
+
+.node-link-yes {
+    fill: none;
+    stroke: yellow;
+    stroke-width: 2px;
+
+}
+
+.node-link-yes-2 {
+    
+    stroke: blue;
+}
+
+.node-link-no {
+    fill: none;
+    stroke: #bbb;
+    stroke-width:12px;
+    stroke-opacity: 0.7;
+    stroke-linecap: round;
+    opacity:0.4;
+}
+
+.node-link-no.hovered {
+    stroke:#E72E3D !important;
+    stroke-opacity:1;
+    stroke-width:15;
+}
+
+.link-no-color {
+    fill: none;
+    stroke: #bbb;
+    stroke-width:4px;
+    opacity:0.4;
+}
+
+.link-hide {
+    opacity: 0;
+    cursor: none;
+    pointer-events: none;
+}
+
+.nodeimage.hidden-image {
+
+    visibility: hidden;
+
+}
+
+.circle {
+
+    stroke: #ff0000;
+}
+.circle2 {
+
+    stroke: #ff0000;
+}
+
+div.tooltip {   
+  position: absolute;           
+  text-align: left;               
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: lightsteelblue;   
+  border: 0px;      
+  border-radius: 8px;           
+}
+
+.spinner {
+    position:absolute !important;
+}
+
+/*======================================================*/
+ /* The switch - the box around the slider */
+ .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+} 
+
+
+/*======================================================*/
+
+a:link { color: #EE3124; text-decoration: none;}
+a:visited { color: #EE3124; }
+a:hover { color: #A4CD39; text-decoration: underline;}
+a:active { color: #EE3124; }
+
+</style>
+<!--<svg width="960" height="600"></svg>-->
+<!--<script src="https://d3js.org/d3.v4.min.js"></script>-->
+<script type="text/javascript" src="d3.min.js"></script>
+<script src="d3.slider.js"></script>
+<!--<script src='https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.min.js'></script>-->
+<script type="text/javascript" src="spin.min.js"></script>
+<!--<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>-->
+<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+<!--<script src="https://d3js.org/colorbrewer.v1.min.js"></script>-->
+<script type="text/javascript" src="colorbrewer.min.js"></script>
+
+<script>
+
+    function myFunction() {
+        var x = document.getElementById("menu");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+
+    d3.selection.prototype.moveToFront = function() {
+    return this.each(function(){
+        this.parentNode.appendChild(this);
+    });
+    };
+
+    d3.selection.prototype.moveToBack = function() { 
+       this.each(function() { 
+            this.parentNode.firstChild
+              && this.parentNode.insertBefore(this, firstChild); 
+        });
+    };
+
+    var margin = {top: 20, right: 40, bottom: 20, left: 40},
+    width = screen.width,
+    height = screen.height;
+
+    // Some constants
+    var WIDTH =  screen.width,
+        HEIGHT = screen.height,
+        SHOW_THRESHOLD = 2.5;
+
+    var svg = d3.select("#graph-container")
+            .append("svg")
+            .attr("width",  "100%")
+            .attr("height", height )
+            .attr("class", "overlay");
+
+    var g = svg.append("g")//.attr("transform", "translate(" + -150 + "," + 0 + ")");
+
+    // ZOOM PARAMETERS
+    var min_zoom = 0.05;
+    var max_zoom = 7;
+    var zoom = d3.zoom()
+                .scaleExtent([min_zoom,max_zoom])
+                .on("zoom", zoomed);
+
+    //Para cancelar el zoom con dobleclick (para evitar problemas con eventos)
+    svg.call(zoom)
+        .on("dblclick.zoom", null);
+
+    var transform = d3.zoomIdentity
+                    //.translate(WIDTH / 4, HEIGHT / 4)
+                    .scale(1);
+                    
+    svg.call(zoom.transform, transform);
+
+    // ========================= SELECT ===========================
+
+    var toggleDiv = function( id, status ) {
+        d = d3.select('div#'+id);
+        if( status === undefined )
+        status = d.attr('class') == 'panel_on' ? 'off' : 'on';
+        d.attr( 'class', 'panel_' + status );
+        d.selectAll("div").remove();
+        return false;
+    }
+
+    d3.csv("years.csv", function(data){
+        //console.log(data);
+        //console.log(typeof(data[0].year));
+        //console.log(data.map(function(d) {return d.year}))
+
+        json = "ED" +  data[0].year + "_RANKCI.json";
+
+        
+
+        // Agregar los años de los JSON en el directorio
+        var data_year = data.map(function(d) {return d.year})
+
+    var data_filter = ["RANK_CI", "RANK_CII"]
+    var data_metrics = ["distances", "degree subgraph", "degree origin", "closeness centrality", "betweeness centrality"]
+    //var data_year = ["2017"]
+
+    // SET TO FALSE FOR SIMULATE WHEN START
+    var initializedPos = false;
+
+    //json = "ED2017_RANKCI.json"
+
+    var select = d3.select('#filter_selector')
+        .append('select')
+        .attr('class','select')
+        .property("selected", function(d){ refresh() })
+        .on('change',onchange)
+
+    var options = select
+        .selectAll('option')
+        .data(data_filter).enter()
+        .append('option')
+        .text(function (d) { return d; });
+
+    var select_metric = d3.select('#metric_selector')
+        .append('select')
+        .attr('class','select');
+
+    var options_metric = select_metric
+        .selectAll('option')
+        .data(data_metrics).enter()
+        .append('option')
+        .text(function (d) { return d; });
+
+    // SELECTOR DE AÑO
+    var select_year = d3.select('#year_selector')
+        .append('select')
+        .attr('class','select')
+        //.property("selected", function(d){ refresh() })
+        .on('change',onchange)
+
+    var options_year = select_year
+        .selectAll('option')
+        .data(data_year).enter()
+        .append('option')
+        .text(function (d) { return d; });
+
+    // loader settings
+    var opts = {
+        lines: 9, // The number of lines to draw
+        length: 9, // The length of each line
+        width: 5, // The line thickness
+        radius: 14, // The radius of the inner circle
+        color: '#EE3124', // #rgb or #rrggbb or array of colors
+        speed: 1.9, // Rounds per second
+        trail: 40, // Afterglow percentage
+        className: 'spinner' // The CSS class to assign to the spinner
+
+    };
+    // SPINNER
+    var spinner = new Spinner(opts)
+
+    
+
+    function onchange() {
+
+        var selectValue = select.property('value')
+        var selectYear = select_year.property('value')
+
+        if(selectValue == "RANK_CI"){
+            json = initializedPos? "ED"+selectYear+"_RANKCI_INIT.json" : "ED"+selectYear+"_RANKCI.json";
+        }
+        else if(selectValue == "RANK_CII"){
+            json = initializedPos? "ED"+selectYear+"_RANKCII_INIT.json" : "ED"+selectYear+"_RANKCII.json";
+        }
+
+        svg.selectAll("*").remove();
+
+        var loading = svg.append("text")
+            .attr("x", "50%")
+            .attr("y", "50%")
+            .attr("dy", ".35em")
+            .style("text-anchor", "middle")
+            .text("Simulating. One moment please…");
+
+        // trigger loader
+        var target = document.getElementById('graph-container');
+        //spinner.spin(target);
+
+        refresh()
+    };
+
+    function update() {
+        //circle.remove();
+        //g.remove();
+        svg.remove();
+
+        svg = d3.select("#graph-container").append("svg")
+            .attr("width",  "100%" )
+            .attr("height", height )
+            .attr("class", "overlay");
+
+        //Para cancelar el zoom con dobleclick (para evitar problemas con eventos)
+        svg.call(zoom)
+            .on("dblclick.zoom", null);
+
+        var transform = d3.zoomIdentity
+                        //.translate(WIDTH / 4, HEIGHT / 4)
+                        .scale(1);
+                        
+        svg.call(zoom.transform, transform);
+
+
+        //Drawing some circles
+        g = svg.append("g")//.attr("transform", "translate(" + -150 + "," + 0 + ")");
+        var n_circles = 5
+        
+        for(i = 0;i<7; i++){           
+            var dim = 110 * (i+1) 
+            var circle = g.append("circle")
+                    .attr("class", "circle"+i)
+                    .attr("cx", "50%")
+                    .attr("cy", "50%")
+                    .attr("r", dim)
+                    .style("fill", "none")
+                    .style("stroke", "black")
+                    ;
+        }
+    }
+    // =============================================================
+
+/*
+    var dataDeg = ["ALL", "HIGH", "MEDIUM", "LOW"];
+    var selectDeg = d3.select('#degrees')
+        .append('select')
+        .attr('class','select');
+
+    var optionsD = selectDeg
+        .selectAll('option')
+        .data(dataDeg).enter()
+        .append('option')
+        .text(function (d) { return d; });
+
+
+    var selectCountry = d3.select("#countries")
+        .append('select')
+        .attr('class','select');
+
+    var optionsC = selectCountry
+        .selectAll('option');
+*/
+
+    var ranksCIdata = [1,2,3,4,5]
+                
+    var select_rank = d3.select('#rank_selector')
+        .append('select')
+        .attr('class','select');
+
+    var options_rank = select_rank
+        .selectAll('option')
+        .data(ranksCIdata).enter()
+        .append('option')
+        .text(function (d) { return d; });
+
+    // NEW DIV TO SHOW RELEASES
+    var div = d3.select("body").append("div")   
+                    .attr("class", "tooltip")               
+                    .style("opacity", 0);
+
+    function createTooltip(d){
+        //get node data, manage missing values
+        div.transition()        
+            .duration(10)
+            .style("opacity", .9);
+
+        var s = "<p>Releases entre:</p>"
+        s = s + "<p>"+d.source.name+" --> "+d.target.name+"</p>"
+        for(i=0;i<d.releases.length;i++){
+            s += '<tr><td><a target="_blank" href="https://www.discogs.com/release/'+d.releases[i]+'" style="display:block" >' + d.releases[i] + '</a></td></tr>'
+        }
+
+        
+        div.html("<table>" + s + "</table>")
+        .style("left", (d3.event.pageX) + "px")     
+        .style("top", (d3.event.pageY - 28) + "px");
+    }
+
+    // TABLE WITH RELEASES ==============================
+    var releasesDiv = d3.select("#release_container");
+
+    function createDiv(d){
+        d3.select("#release_container").selectAll("*").remove();
+
+        releasesDiv.append("h4")
+            .text("releases entre:")
+
+        releasesDiv
+            .append("p")
+            .text(d.source.name + " <--> "+ d.target.name)
+
+        /*for(i=0;i<d.releases.length;i++){
+            $.getJSON("https://api.discogs.com/releases/"+d.releases[i], function(data) {
+                releasesDiv
+                        .append("div")
+                        .html('<a target="_blank" href="' + data.uri + '" style="display:block" >' + data.title + '</a>')
+                        //.text(data.title)
+
+            })
+        }*/
+        for(i=0;i<d.releases.length;i++){
+
+            var link = "https://www.discogs.com/release/" + d.releases[i]
+            var title = d.titles[i]
+            var image = "images/releases/" + d.images[i]
+            //console.log(image)
+
+            releasesDiv
+                .append("div")
+                .html('<a target="_blank" href="' + link  + '" style="display:block" >' + title + '</a>')
+                //.text(data.title)
+            
+            releasesDiv
+                .append('img')
+                .attr('class', 'picture')
+                .attr('src', image)
+                .attr('height', '100')
+                .attr('width', '100');
+
+            releasesDiv
+                .append('hr')
+
+        }
+
+
+    }
+    //====================================================
+
+    var fill = d3.scaleOrdinal(d3.schemeCategory20).domain(d3.range(0, 20));
+
+
+
+
+    function refresh(){
+
+        artistInfoDiv = d3.select("#artistInfo");
+
+
+
+
+        function getArtistInfo( n ) {
+
+
+
+
+
+            info = '<div id="cover">';
+            if( n.image )
+            info += '<img class="cover" height="300" width="200" src="' + "images/artists/" + n.image + '" title="' + n.name + '"/>';
+            else
+            info += '<div class=t style="float: right">' + n.name + '</div>';
+            info +=
+            '<img src="close.png" class="action" style="top: 0px;" title="close panel" onClick="toggleDiv(\'artistInfo\');"/>' 
+            info += '<br/></div><div style="clear: both;">'
+            if( n.citizenships.length > 0 ){
+                info += '<div class=f><span class=l>Nacionalidades</span>: ' ;
+                    info += n.citizenships.map( function(n){
+                        return "<span class=g>"+ n + " </span>"
+                    }).join(' - ');
+                '</div>';
+            }
+            else{
+                info += '<div class=f><span class=l>Nacionalidades</span>: ' ;
+                info += 'no info';
+                '</div>';
+            }
+            if( n.instruments.length > 0 ){
+                info += '<div class=f><span class=l>Instrumentos</span>:';
+                    info += n.instruments.map( function(n){
+                        return "<span class=g>"+ n + " </span>"
+                    }).join(' - ');
+                '</div>';
+            }
+            else{
+                info += '<div class=f><span class=l>Instrumentos</span>: ' ;
+                info += 'no info';
+                '</div>';
+            }
+            if( n.mbLink )
+            info += '<div class=f><span class=l>Musicbrainz link</span>:' +
+                '<a target="_blank" href="'+ n.mbLink + '" style="display:block" >' + n.mbLink + '</a></div>';
+            if( n.wikiLink )
+            info += '<div class=f><span class=l>Wikidata link</span>:' +
+                '<a target="_blank" href="'+ n.wikiLink + '" style="display:block" >' + n.wikiLink + '</a></div>';
+            if( n.id )
+            info += '<div class=f><span class=l>Discogs link</span>:' +
+                '<a target="_blank" href="https://www.discogs.com/artist/'+ n.id + '" style="display:block" >https://www.discogs.com/artist/' + n.id + '</a></div>';
+            if( n.duration )
+            info += '<div class=f><span class=l>Year</span>: ' + n.year 
+                + '<span class=l style="margin-left:1em;">Duration</span>: ' 
+                + n.duration + '</div>';
+            if( n.links ) {
+            info += '<div class=f><span class=l>Related to</span>: ';
+            n.links.forEach( function(idx) {
+            info += '[<a href="javascript:void(0);" onclick="selectMovie('  
+                + idx + ',true);">' + nodeArray[idx].label + '</a>]'
+            });
+            info += '</div>';
+            }
+            return info;
+        }
+
+
+
+        function showArtistPanel( node ) {
+            // Fill it and display the panel
+            artistInfoDiv
+            .html( getArtistInfo(node) )
+            .attr("class","panel_on");
+        }
+
+
+        /* --------------------------------------------------------------------- */
+        function color(level){
+            if(level == "other"){
+                return "#26455f"
+            }
+            if(level == "relevant"){
+                return "green"
+            }
+            else return "orange"
+        }
+
+        var lwidth = document.getElementById('left').offsetWidth;
+        var lheight = document.getElementById('left').offsetHeight;
+
+        update();
+        const margin = {top: 40, right: 90, bottom: 50, left: 90};
+
+        // Carga de datos/json
+        d3.json(json, function(error, graph) {
+
+            var legendData = ["Invitados", "Relevantes", "Otros"]
+
+            var legend = g.append("svg:g")//d3.select("#legend_graph")  //REPLACE svg WITH g FOR DRAGGING OF THE ENTIRE GRAPH
+                .selectAll("legend")
+                .data(legendData)
+                .enter().append("g")
+                .attr("class", "legend")
+                .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+            legend.append("circle")
+                .attr("cx", lwidth - 32)
+                .attr("cy", 10)
+                .attr("r", 9)
+                .style("fill", function(d){
+                    if(d == "Relevantes"){
+                        return "green"
+                    }
+                    else if(d == "Invitados"){
+                        return "orange"
+                    }
+                    else{
+                        return "#26455f"
+                    }
+                });
+
+            legend.append("text")
+                .attr("x", lwidth - 45)
+                .attr("y", 7)
+                .attr("dy", ".35em")
+                .style("text-anchor", "end")
+                .text(function(d) { return d; });
+
+            // Prints JSON to console
+            function printNewJSON(){
+                var output = {};
+                var nodeInfo = [];
+                var linkInfo = [];
+
+                d3.selectAll('.nodes2')
+                    .filter(function(d){
+                    d.fx = d.x;
+                    d.fy = d.y;
+                    d.vx = 0;
+                    d.vy = 0;
+                    nodeInfo.push(d);
+                    });
+
+                output['nodes'] = nodeInfo;
+                output['links'] = data_links;
+
+                // OUTPUT OF JSON WITH INITIALIZED POSITIONS
+                // RIGHT CLICK ON CONSOLE OUTPUT -> STORE AS GLOBAL VARIABLE (stored as temp_n) -> IN CONSOLE: copy(temp_n) -> JSON COPIED ON CLIPBOARD
+                //console.log(output);
+            }
+
+            // global variable to save off the links easily
+            var data_links;
+            // make a deep copy of the links
+            data_links = JSON.parse(JSON.stringify(graph.links));
+
+             //===================SIMULATION====================================
+            var width = lwidth - 22;
+            var simulation = d3.forceSimulation()
+                .force("link", 
+                d3.forceLink().id(function(d) { return d.index; }).strength(function(d) {return 0.2; })
+                //.strength(function(d) {return 0.02; }).iterations(30)
+                )
+                .force("charge", d3.forceManyBody().strength(-200))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collide", d3.forceCollide().radius(function(d) { return d.class != 'other'? getRadiusByMetric(d) +  5.0 : getRadiusByMetric(d) + 10.0; }))
+                .on('end', function() { 
+                    //console.log('ended!');
+                    // ACTIVATE TO SAVE JSON WITH INITIALIZED POSITIONS
+                    //printNewJSON();
+                });
+
+            d3.select("input[type=range]")
+                .on("input", inputted);
+
+            d3.select("#color-activator")
+            .property("checked", false)
+            .on("change", changeColor);
+
+            //default select value
+            d3.select("input[type=range]").property("value", 0.5)
+            d3.select("#link-str-val").text((0.5*100).toFixed(2) + "%");
+
+            var link = g.append("svg:g")  //REPLACE svg WITH g FOR DRAGGING OF THE ENTIRE GRAPH
+                .selectAll("line")
+                .data(graph.links)
+                .enter().append("svg:line")
+                .classed("node-link-no", true)
+                .style("cursor", "pointer")
+                .on("click", function(d){createDiv(d);})
+
+            var link2 =  g.append("svg:g")  //REPLACE svg WITH g FOR DRAGGING OF THE ENTIRE GRAPH
+                .selectAll("path")
+                .data(graph.links)
+                .enter().append("svg:path")
+                .style("stroke","white")
+                .style("shape-rendering","auto")
+
+            var nodeClicked = false;
+            var nodeOn;
+
+            var isDragging = false; 
+
+            var node = g.append("svg:g")  //REPLACE svg WITH g FOR DRAGGING OF THE ENTIRE GRAPH
+                .attr("class", "nodes")
+                .selectAll("g")
+                .data(graph.nodes)
+                .enter().append("g")
+                .attr('id', function(d) { return "c" + d.index; } )
+                .attr("class", "nodes2")
+                .style('transform-origin', '50% 50%')
+                .style("cursor", "pointer")
+                //.on("mouseover", function(d) { if(!nodeClicked){ highlightGraphNode(d) } else {  }; } )
+                //.on("mouseout", function(d) { if(!nodeClicked){ deHighlight(); filterRanks()} else {  }; })
+                .on("click", function(d) { 
+                    if(!nodeClicked) {
+                        nodeClicked = true;
+                        nodeOn = d;
+                        highlightGraphNode(d);
+                        showArtistPanel(d, maxLevel);
+                    }
+                    else{
+                        showArtistPanel(d, maxLevel)
+                    }
+                })
+                .call(d3.drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended)); // DESCOMENTAR PARA ACTIVAR ARRASTRE DE NODOS*/
+
+
+            // to deactivate highlight pressing ESCAPE
+            d3.select("body")
+                .on("keydown", function() {
+                    if(d3.event.keyCode == 27){
+                        nodeClicked = false;
+                        deHighlight();
+                        filterRanks();
+                    }
+                })
+
+            // add hovered behavior on linnk
+            svg.selectAll(".node-link-no")
+                .on("mouseover", function(d) {
+                    var sel = d3.select(this);
+                    sel.classed("hovered",true);
+                })
+                .on("mouseout", function() {
+                    var sel = d3.select(this);
+                    sel.classed("hovered",false);
+                });
+
+
+            // In theory is the fastest way to find a max value in javascript...
+            function findMaxLevel(arr) {
+                let max = Math.max.apply(Math, arr[0].levels);
+            
+                for (let i = 1, len=arr.length; i < len; i++) {
+                let v = Math.max.apply(Math, arr[i].levels);
+                max = (v > max) ? v : max;
+                }
+            
+                return max+1;
+            }
+
+            var maxLevel = findMaxLevel(graph.nodes);
+
+            //Contamos la cantidad de nodos "guest"    
+            var numGuests = graph.nodes.filter(function(d){ return d.class == "guest" }).length;
+
+            const concat = (x,y) =>
+                x.concat(y)
+
+            const flatMap = (f,xs) =>
+                xs.map(f).reduce(concat, [])
+
+            var numLevels = d3.set(flatMap(d => d.levels, graph.nodes)).size();
+
+            function toScale(index, length) {
+                const scale = d3.scaleLinear().domain([0, length - 1]).range([0 + margin.left, width - margin.right]);
+                return scale(index);
+            }
+
+            var levelMap = flatMap(d => d.levels, graph.nodes).reduce(function(map, level){
+                map[level] = (map[level]||0)+1;
+                return map;
+            }, Object.create(null));
+            
+
+            // CIRCULAR LAYOUT FUNCTIONS
+            //function returns small and big radiuses of annulus based on Point year
+            function getAnnulus(levels){
+                //var big_radius;
+                var separator = 110;
+
+                if(levels.length > 1){
+
+                    var plus = 2;
+
+                    var max_level = Math.max.apply(Math, levels);
+                    var min_level = Math.min.apply(Math, levels);
+
+                    var big_radius = (max_level + plus) * separator;
+                    var small_radius = (min_level + plus) * separator;
+
+                    //return [big_radius - separator, big_radius];
+                    return [small_radius, big_radius];
+                }else{
+                    var big_radius = (levels[0] + 1) * separator;
+                    return [big_radius - separator/2, big_radius]
+                }
+            }
+
+            //function to verify if X in the correct position
+            function verifyPosition(x, y, small_r,big_r){
+                var point;
+
+                var cx = width/2;
+                var cy = height/2;
+                //verify if P is in annulus defined by small_r and big_r
+                if ( (Math.pow(x - cx,2) + Math.pow(y - cy, 2)) <= Math.pow(small_r,2) ){
+                    // P inside small circle
+                    point = recalculateP(x, y, small_r);
+                } else if ( (Math.pow(x - cx, 2) + Math.pow(y - cy, 2)) > Math.pow(big_r,2)){
+                    // P outside big circle
+                    point = recalculateP(x, y, big_r);
+                } else {
+                    point = [x,y];
+                }
+                return point;
+            }
+
+            //places point off circle on circle ring
+            function recalculateP(x, y, r){
+                var cx = width/2;
+                var cy = height/2;
+
+                var vx = x - cx;
+                var vy = y - cy;
+                var norm = Math.sqrt(Math.pow(vx,2)+ Math.pow(vy,2));
+                var new_x = cx + vx / norm * r;
+                var new_y = cy + vy / norm * r;
+                return [new_x,new_y];
+            }
+            //====================================================================================
+
+            // evenly spaces nodes along arc
+            function circleCoord(i, numNodes, r){
+                angle = (i / (numNodes/2)) * Math.PI; // Calculate the angle at which the element will be placed.
+                // For a semicircle, we would use (i / numNodes) * Math.PI.
+                x = (r * Math.cos(angle)) + (width/2); // Calculate the x position of the element.
+                y = (r * Math.sin(angle)) + (height/2); // Calculate the y position of the element.
+
+                return [x, y];
+            };
+
+
+            //Contamos la cantidad de nodos "guest"    
+            var count = 0;
+            for(var j = 0; j < graph.nodes.length; ++j){
+                if(graph.nodes[j].class == "guest")
+                    count++;
+            }
+
+            //Contamos la cantidad de nodos "relevant" de categoria 1 y 2 
+            var count1 = 0;
+            var count2 = 0;
+
+            for(var j = 0; j < graph.nodes.length; ++j){
+                if(graph.nodes[j].class == "relevant"){
+                    if(graph.nodes[j].category == 1)
+                        count1++;
+                    else
+                        count2++;
+                }
+            }
+
+            var cg = 0;
+            var ci = 0;
+            var cii = 0;
+
+            //Setting fixed positions
+            graph.nodes.forEach(function(n) {
+                if(n.class == "relevant" && n.category == 1){
+                    var annulus = getAnnulus([0]);
+                    var position = circleCoord(ci, count1, annulus[1]);
+                    ci++
+                    n.fx = position[0];
+                    n.fy = position[1];
+                }else if(n.class == "relevant" && n.category == 2){
+                    var annulus = getAnnulus([1]);
+                    var position = circleCoord(cii, count2, annulus[1]);
+                    cii++
+                    n.fx = position[0];
+                    n.fy = position[1];
+                }else if(n.class == "guest"){
+                    var annulus = getAnnulus(n.levels);
+                    var position = circleCoord(cg, count, annulus[1]);
+                    cg++
+                    n.fx = position[0];
+                    n.fy = position[1];
+                }
+            });
+
+
+
+
+            var ticked = function() {
+                graph.nodes.forEach(function(n) {
+                    if(n.class == "other"){
+                        var annulus = getAnnulus(n.levels);
+                        var position = verifyPosition(n.x, n.y, annulus[0], annulus[1]);
+                        n.x = position[0];
+                        n.y = position[1];
+                    }
+                });
+
+
+                link
+                    .attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+                link2.attr("d", function(d) { return positionLink(d) });
+
+        
+                node
+                    .attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });
+
+                node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+            }  
+        
+
+            simulation
+                .nodes(graph.nodes)
+                .on("tick", ticked);
+
+            simulation.force("link")
+                .links(graph.links);
+
+
+            //================= NEW! INTERPOLATION ANIMATION =======================
+            function transition(path, nodes) {         
+
+                path.transition()
+                    .duration(1000)
+                    .attrTween("stroke-dasharray", tweenDash)
+                    .on("end", function(){
+                        if(!mouseLeaveFlag) node.classed("highlight-node", function(d){return nodes.includes(d.index)})
+                    })
+                    //.on("end", function() { d3.select(this).call(transition); }); // FOR LOOPING
+            }
+
+            function tweenDash() {
+                var l = this.getTotalLength(),
+                    i = d3.interpolateString("0," + l, l + "," + l);
+                return function(t) { return i(t); };
+            }
+
+            //======================================================================
+
+            // Detenemos el spinner
+            //spinner.stop()
+
+             //función que vuelve todo a la normalidad
+            function deHighlight() {
+                link.classed("node-link-no", true);
+                link.classed("link-hide", false);
+                //link.classed("node-link-yes-2", false);
+                node.classed("hidden-node", false);
+                node.classed("show-text", false);
+                images.classed("hidden-image", false);                
+            }
+
+
+            function contains_node(list, node){
+                return list.includes(node.index)
+            }
+
+            function highlightGraphNode(d){
+
+                var selectedRank = select_rank.property('value')
+                var selectValue = select.property('value')
+
+                if(selectValue == "RANK_CI"){
+                    var srcNodesInRank = d3.set(graph.links.filter(l => l.rank_ci <= selectedRank), function(d){ return d.source.index }).values();
+                    var trgNodesInRank = d3.set(graph.links.filter(l => l.rank_ci <= selectedRank), function(d){ return d.target.index }).values();
+                }
+                else if(selectValue == "RANK_CII"){
+                    var srcNodesInRank = d3.set(graph.links.filter(l => l.rank_cii <= selectedRank), function(d){ return d.source.index }).values();
+                    var trgNodesInRank = d3.set(graph.links.filter(l => l.rank_cii <= selectedRank), function(d){ return d.target.index }).values();
+                }
+
+                var nodesInRank = srcNodesInRank.concat(trgNodesInRank).map(Number)
+                var nodesInRankInPath = d["links"+selectedRank].filter(i => nodesInRank.includes(i));
+
+                //ocultamos nodos que no estan en el camino
+                node.classed("hidden-node", function(n) {
+                    return !(contains_node(nodesInRankInPath, n));
+                });
+
+                node.classed("show-text", function(n) {
+                    return contains_node(d["links"+selectedRank], n);
+                });
+                //ocultamos aristas que no nos interesan
+                link.classed("link-hide", function(n) {
+                    if(selectValue == "RANK_CI"){
+                        return n.rank_ci > selectedRank || (!d["links"+selectedRank].includes(n.source.index) || !d["links"+selectedRank].includes(n.target.index))
+                    }
+                    else if(selectValue == "RANK_CII"){
+                        return n.rank_cii > selectedRank || (!d["links"+selectedRank].includes(n.source.index) || !d["links"+selectedRank].includes(n.target.index))
+                    }});
+
+                link2.classed("link-hide", function(n) {
+                    if(selectValue == "RANK_CI"){
+                        return n.rank_ci > selectedRank || (!d["links"+selectedRank].includes(n.source.index) || !d["links"+selectedRank].includes(n.target.index))
+                    }
+                    else if(selectValue == "RANK_CII"){
+                        return n.rank_cii > selectedRank || (!d["links"+selectedRank].includes(n.source.index) || !d["links"+selectedRank].includes(n.target.index))
+                    }});
+
+
+                /*link2
+                    .call(transition);*/
+
+                //marcamos las aristas que nos interesan
+                //link.classed("node-link-yes", function(n) {return d.links.includes(n.source.index) && d.links.includes(n.target.index)});
+            }
+
+
+            function changeColor() {
+                if(d3.select("#color-activator").property("checked")){
+                    link.style("stroke", function(d){ return fill(d.path_id); })
+                    
+                }else{
+                    link.style("stroke", "#bbb")
+                }
+            }
+
+            // max degree of subgraph
+            var maxds = d3.max(graph.nodes, function(d) { return d.degree; });
+            var minds = d3.min(graph.nodes, function(d) { return d.degree; });
+
+            // max degree of origin graph (ALL DB)
+            var maxdo = d3.max(graph.nodes, function(d) { return d.degree_origin; });
+            var mindo = d3.min(graph.nodes, function(d) { return d.degree_origin; });
+
+            // max CC
+            var maxcc = d3.max(graph.nodes, function(d) { return d.cc; });
+            var mincc = d3.min(graph.nodes, function(d) { return d.cc; });
+
+            // max BC
+            var maxbc = d3.max(graph.nodes, function(d) { return d.bc; });
+            var minbc = d3.min(graph.nodes, function(d) { return d.bc; });
+
+            var radius = d3.scaleSqrt()
+                .domain([minds,maxds])
+                .range([6, 15]);
+
+            function degreeF(node){
+                /*if(node.class == "guest"){
+                    return maxds+100
+                }
+                else if(node.class == "relevant"){
+                    return maxds+100
+                }
+                else*/ return node.degree
+            }
+
+            var radiusO = d3.scaleSqrt()
+                .domain([mindo,maxdo])
+                .range([6, 15]);
+
+            function degreeFO(node){
+                /*if(node.class == "guest"){
+                    return maxdo+100
+                }
+                else if(node.class == "relevant"){
+                    return maxdo+100
+                }
+                else*/ return node.degree_origin
+            }
+
+            var radiusCC = d3.scaleSqrt()
+                .domain([mincc*100, maxcc*100])
+                .range([4, 18]);
+
+            function degreeCC(node){
+               /* if(node.class == "guest"){
+                    return maxcc*100
+                }
+                else if(node.class == "relevant"){
+                    return maxcc*100
+                }
+                else*/ return node.cc*100
+            }
+
+
+            var radiusBC = d3.scaleSqrt()
+                .domain([Math.floor(minbc*1000), Math.ceil(maxbc*1000)])
+                .range([6, 15]);
+
+            function degreeBC(node){
+                /*if(node.class == "guest"){
+                    return maxbc*1000
+                }
+                else if(node.class == "relevant"){
+                    return maxbc*1000
+                }
+                else*/ return node.bc*1000
+            }
+
+            /*selectDeg
+                .property("selected", function(d){ return d === "ALL" })
+                .on('change',onchange2)*/
+
+            function onchange2() {
+                var selectValue2 = selectDeg.property('value')
+                degreeSelect(selectValue2)
+                };
+            
+            function onchange3(){
+                deHighlight(); 
+                var selectValue3 = selectCountry.property('value')
+                if (selectValue3 == "ALL"){
+                    deHighlight();
+                }else{
+                    //ocultamos nodos que no estan en el rango
+                    node.classed("hidden-node", function(n) {
+                            return ! ( n.citizenships[0] == selectValue3);
+                        });
+
+                    //ocultamos imagenes
+                    images.classed("hidden-image",function(n) {
+                        return ! ( n.citizenships[0] == selectValue3);
+                    });
+
+                    //hacemos invisible a las aristas
+                    link.classed("node-link-no", false);
+                    }
+
+            }
+
+           
+
+            // Obtenemos paises
+            //var dataCountry = ["ALL"].concat(d3.set(msg.data.nodes, function(d) { return d.citizenships[0]; }).values());
+
+            // removemos opciones si hay
+            //selectCountry.selectAll('option').remove();
+
+            /*optionsC
+                .data(dataCountry).enter()
+                .append('option')
+                .text(function (d) { return d; });
+
+            selectCountry
+                .property("selected", function(d){ return d === "ALL" })
+                .on('change',onchange3)*/
+
+
+            // Selector de ranks        
+            select_rank
+                .property("selected", function(d){ return d === 1; })
+                .on('change', filterRanks);
+
+            function filterRanks(){
+
+                //deHighlight();
+
+                var selectedRank = select_rank.property('value')
+
+                var selectValue = select.property('value')
+                if(selectValue == "RANK_CI"){
+                    var srcNodesInRank = d3.set(graph.links.filter(l => l.rank_ci <= selectedRank), function(d){ return d.source.index}).values();
+                    var trgNodesInRank = d3.set(graph.links.filter(l => l.rank_ci <= selectedRank), function(d){ return d.target.index}).values();
+                    
+                }
+                else if(selectValue == "RANK_CII"){
+                    var srcNodesInRank = d3.set(graph.links.filter(l => l.rank_cii <= selectedRank), function(d){ return d.source.index}).values();
+                    var trgNodesInRank = d3.set(graph.links.filter(l => l.rank_cii <= selectedRank), function(d){ return d.target.index}).values();
+                }
+
+                var nodesInRank = srcNodesInRank.concat(trgNodesInRank)
+
+                // ocultamos aristas
+                link.classed("link-hide",  function(n) {
+                    if(selectValue == "RANK_CI"){
+                        return n.rank_ci > selectedRank 
+                    }
+                    else if(selectValue == "RANK_CII"){
+                        return n.rank_cii > selectedRank 
+                    }
+                });
+
+                link2.classed("link-hide",  function(n) {
+                    if(selectValue == "RANK_CI"){
+                        return n.rank_ci > selectedRank 
+                    }
+                    else if(selectValue == "RANK_CII"){
+                        return n.rank_cii > selectedRank 
+                    }});
+
+                // ocultamos nodos que no estan en los caminos del rango seleccionado
+                node.classed("hidden-node", function(n){
+                    return !nodesInRank.includes(n.index.toString())
+                });
+
+                // mostramos nombre de los artistas relevantes e invitados
+                node.classed("show-text", function(n){
+                    return n.class == "guest" || n.class == "relevant"
+                });
+            }
+
+
+            //=========================================================================
+            
+            var threshold = d3.scaleThreshold()
+                .domain([.25, .30, .75, .90])
+                .range(colorbrewer.Reds[5]);
+
+
+            var node_circle = node.append('circle')
+                        .attr("stroke", function(d) { return color(d.class); })
+                        .attr("r", function(d) { return radius(degreeF(d) * 6); })
+                        .attr("fill", function(d) { return color(d.class); });
+
+            var node_circle2 = node.append('circle')
+                        //.attr("stroke", function(d) { return threshold(d.cc); })
+                        .attr("r", function(d) { return radius(degreeF(d) * 7); })
+                        .attr("stroke-width", 2)
+                        .attr("fill", "none");
+
+            function getRadiusByMetric(d){
+
+                var selectedMetric = select_metric.property('value')
+
+                if(selectedMetric == "distances"){
+                    return setDistance(d) * 7
+                }
+                else if(selectedMetric == "degree subgraph"){
+                    return radius(degreeF(d) * 7);
+                }else if(selectedMetric == "degree origin"){
+                    return radiusO(degreeFO(d) * 7);
+                }else if(selectedMetric == "closeness centrality"){
+                    return radiusCC(degreeCC(d));
+                }else{
+                    return radiusBC(degreeBC(d) * 7);
+                }
+            }
+
+            var tcBlack = "#130C0E";
+  
+            var nodetext = node.append("text")
+                .attr("class", "nodetext")
+                .attr("x", 0)
+                .attr("y", function(d){ return getRadiusByMetric(d) + 5 })
+                .attr("text-anchor", "middle")
+                .attr("fill", tcBlack)
+                .text(function(d) { return d.name; });
+
+            //images=============================================
+            // Append images
+
+            var clip_path = node.append("clipPath")
+                .attr("id", function(d){ return "clipCircle" + d.index; })
+                    .append("circle")
+                    .attr("r", function(d) { return radius(degreeF(d) * 5); })
+
+
+
+            var images = node.append("image")
+                    /*.attr('xlink:href',function(d){
+                    return d.image + "?width=" + parseInt(radius(degreeF(d) * 5 * 5)) + "&height=" + parseInt(radius(degreeF(d) * 5 * 7)) + "&crop=1%3A1"
+                    })*/
+                    .attr('xlink:href',function(d){
+                    return "images/artists/" + d.image})
+                    .attr("class", "nodeimage")
+                    .attr("x", function(d) { return -radius(degreeF(d) * 5) ;})
+                    .attr("y", function(d) { return -radius(degreeF(d) * 5) ;})
+                    .attr('height', function(d) { return radius(degreeF(d) * 5 * 5); })
+                    .attr('width', function(d) { return radius(degreeF(d) * 5 * 5); })
+                    .attr("clip-path", function(d){return "url(#clipCircle" + d.index +")"});
+
+
+            function setDistance(d){
+                var size = d.levels.length
+                                
+                if(d.class == "relevant" && d.category == 1){
+                    return maxLevel - d.levels[0] + 2
+                }
+                else if(d.class == "relevant" && d.category == 2){
+                    return maxLevel - d.levels[0]
+                }
+                else if(d.class == "guest"){
+                    return maxLevel - d.levels[size-1] + 1
+                }
+                else{
+                    return 2
+                }
+            }
+                                
+            function simulateAndChangeMetrics(){
+                changeMetrics();
+                simulation.alpha(1).restart();
+            }
+                                
+            // Selector de metricas
+            select_metric
+                .property("selected", changeMetrics)
+                .on('change', simulateAndChangeMetrics);
+
+            function changeMetrics(){
+
+                var selectedMetric = select_metric.property('value')
+
+                if(selectedMetric == "distances"){
+                    node_circle
+                        .attr("r", function(d) { return setDistance(d) * 6; })
+
+                    node_circle2
+                        .attr("r", function(d) { return setDistance(d) * 7; })
+                    
+                    clip_path
+                        .attr("r", function(d) { return setDistance(d) * 5; })
+
+                    images
+                        .attr("x", function(d) { return -setDistance(d) * 5 ;})
+                        .attr("y", function(d) { return -setDistance(d) * 5 ;})
+                        .attr('height', function(d) { return setDistance(d) * 5 * 2; })
+                        .attr('width', function(d) { return setDistance(d) * 5 * 2; })
+
+                    nodetext
+                        .attr("y", function(d) { return setDistance(d) * 7 + 10;});
+
+                }else if(selectedMetric == "degree subgraph"){
+
+                    node_circle
+                        .attr("r", function(d) { return radius(degreeF(d) * 6); })
+
+                    node_circle2
+                        .attr("r", function(d) { return radius(degreeF(d) * 7); })
+                    
+                    clip_path
+                        .attr("r", function(d) { return radius(degreeF(d) * 5); })
+
+                    images
+                        .attr("x", function(d) { return -radius(degreeF(d) * 5) ;})
+                        .attr("y", function(d) { return -radius(degreeF(d) * 5) ;})
+                        .attr('height', function(d) { return radius(degreeF(d) * 5 * 5); })
+                        .attr('width', function(d) { return radius(degreeF(d) * 5 * 5); })
+
+                    nodetext
+                        .attr("y", function(d) { return radius(degreeF(d) * 7) + 10;});
+
+                }else if(selectedMetric == "degree origin"){
+
+                    node_circle
+                        .attr("r", function(d) { return radiusO(degreeFO(d) * 6); })
+
+                    node_circle2
+                        .attr("r", function(d) { return radiusO(degreeFO(d) * 7); })
+
+                    clip_path
+                        .attr("r", function(d) { return radiusO(degreeFO(d) * 5); })
+
+                    images
+                        .attr("x", function(d) { return -radiusO(degreeFO(d) * 5) ;})
+                        .attr("y", function(d) { return -radiusO(degreeFO(d) * 5) ;})
+                        .attr('height', function(d) { return radiusO(degreeFO(d) * 5 * 5); })
+                        .attr('width', function(d) { return radiusO(degreeFO(d) * 5 * 5); })
+
+
+                    nodetext
+                        .attr("y", function(d) { return radiusO(degreeFO(d) * 7) + 10;});
+
+                }else if(selectedMetric == "closeness centrality"){
+
+                    node_circle
+                        .attr("r", function(d) { return radiusCC(degreeCC(d)); })
+
+                    node_circle2
+                        .attr("r", function(d) { return radiusCC(degreeCC(d)); })
+
+                    clip_path
+                        .attr("r", function(d) { return radiusCC(degreeCC(d)); })
+
+                    images
+                        .attr("x", function(d) { return -radiusCC(degreeCC(d)) ;})
+                        .attr("y", function(d) { return -radiusCC(degreeCC(d)) ;})
+                        .attr('height', function(d) { return radiusCC(degreeCC(d))*2; })
+                        .attr('width', function(d) { return radiusCC(degreeCC(d))*2; })
+
+                    nodetext
+                        .attr("y", function(d) { return radiusCC(degreeCC(d)) + 10;});
+
+                }else{
+
+                    node_circle
+                        .attr("r", function(d) { return radiusBC(degreeBC(d) * 6); })
+
+                    node_circle2
+                        .attr("r", function(d) { return radiusBC(degreeBC(d) * 7); })
+
+                    clip_path
+                        .attr("r", function(d) { return radiusBC(degreeBC(d) * 5); })
+
+                    images
+                        .attr("x", function(d) { return -radiusBC(degreeBC(d) * 5) ;})
+                        .attr("y", function(d) { return -radiusBC(degreeBC(d) * 5) ;})
+                        .attr('height', function(d) { return radiusBC(degreeBC(d) * 5 * 5); })
+                        .attr('width', function(d) { return radiusBC(degreeBC(d) * 5 * 5); })
+                    
+                    nodetext
+                        .attr("y", function(d) { return  radiusBC(degreeBC(d) * 7) + 10;});
+
+                }             
+            }
+
+            var mouseLeaveFlag = false
+
+            node.on("mouseenter",  function(d) {
+                        mouseLeaveFlag = false
+
+                        //console.log(d.levels)
+                        if(!isDragging){
+
+                            var rad;
+                            if(d.class == "relevant"){                
+                                rad = getRadiusByMetric(d)
+                            }else{
+                                rad = 34
+                            }
+                            //Node circle
+                            d3.select( this.childNodes[0] )
+                            .attr("r", rad);
+
+                            //Node circle2
+                            d3.select( this.childNodes[1] )
+                            .attr("r", rad + 1)
+
+                            //clipPath Circle
+                            d3.select( this.childNodes[3].childNodes[0] )
+                            .attr("r", rad - 1);
+
+                            //image
+                            d3.select( this.childNodes[4] )
+                            .attr("x", -rad )
+                            .attr("y", -rad )
+                            .attr('height', rad * 2)
+                            .attr('width', rad * 2);
+
+                            //text                            
+                            d3.select( this.childNodes[2])
+                            .attr("y", rad + 1 + 10);
+
+
+                            var selectedRank = select_rank.property('value')
+                            var selectValue = select.property('value')
+
+                            
+                            if(selectValue == "RANK_CI"){
+
+                                if(d.class != "guest"){
+                                    var paths = graph.links.filter(l => (l.source.index == d.index || l.target.index == d.index) && l.rank_ci <= selectedRank)
+                                        .map(o => o.source.index != d.index? {source:d, target:o.source}:{source:o.source, target:o.target})
+                                        .filter(o => nodeClicked?
+                                            nodeOn["links"+selectedRank].includes(o.target.index) && d["links"+selectedRank].includes(o.target.index):
+                                            d["links"+selectedRank].includes(o.source.index) && d["links"+selectedRank].includes(o.target.index)
+                                        )
+                                }
+                                else{
+                                    var paths = graph.links.filter(l => l.source.index == d.index && l.rank_ci <= selectedRank)
+                                        .map(o => o.source.index != d.index? {source:d, target:o.source}:{source:o.source, target:o.target})
+                                        .filter(o => nodeClicked?
+                                            nodeOn["links"+selectedRank].includes(o.target.index) && d["links"+selectedRank].includes(o.target.index):
+                                            d["links"+selectedRank].includes(o.source.index) && d["links"+selectedRank].includes(o.target.index)
+                                        )
+                                }
+                            }else{
+                                if(d.class != "guest"){
+                                    var paths = graph.links.filter(l => (l.source.index == d.index || l.target.index == d.index) && l.rank_cii <= selectedRank)
+                                        .map(o => o.source.index != d.index? {source:d, target:o.source}:{source:o.source, target:o.target})
+                                        .filter(o => nodeClicked?
+                                            nodeOn["links"+selectedRank].includes(o.target.index) && d["links"+selectedRank].includes(o.target.index):
+                                            d["links"+selectedRank].includes(o.source.index) && d["links"+selectedRank].includes(o.target.index)
+                                        )
+                                }else{
+                                    var paths = graph.links.filter(l => l.source.index == d.index && l.rank_cii <= selectedRank)
+                                        .map(o => o.source.index != d.index? {source:d, target:o.source}:{source:o.source, target:o.target})
+                                        .filter(o => nodeClicked?
+                                            nodeOn["links"+selectedRank].includes(o.target.index) && d["links"+selectedRank].includes(o.target.index):
+                                            d["links"+selectedRank].includes(o.source.index) && d["links"+selectedRank].includes(o.target.index)
+                                        )
+                                }
+                            }
+
+                            var path = g.insert("svg:g", "g.nodes")  //REPLACE svg WITH g FOR DRAGGING OF THE ENTIRE GRAPH
+                                .attr("class", "g2")
+                                .selectAll("path2")
+                                .data(Array.from(new Set(paths)))
+                                .enter().append("svg:path")
+                                .attr("class", "path2")
+                                .style("stroke","red")
+                                .style("stroke-width", "1.5px")
+                                .style("stroke-linecap","round")
+                                .style("shape-rendering","auto")
+                                .attr("d", function(d) { return positionLink(d) })
+
+                            var targetNodes = paths.map(l => l.target.index)
+
+                            //path.call(transition);
+                            transition(path, targetNodes)
+                        }
+
+                    })
+                    .on("mouseleave", function(d){
+                            mouseLeaveFlag = true
+                            changeMetrics()
+                            node.classed("highlight-node", false)
+                            d3.selectAll(".path2").remove()
+                            d3.selectAll(".g2").remove()
+                    });
+                        /*function() {
+                            d3.select( this.childNodes[0] )
+                            .attr("r", function(d) { return radius(degreeF(d) * 6); });
+
+                            d3.select( this.childNodes[1] )
+                            .attr("r", function(d) { return radius(degreeF(d) * 8); });
+
+                            //clipPath Circle
+                            d3.select( this.childNodes[3].childNodes[0] )
+                            .attr("r", function(d) { return radius(degreeF(d) * 5); });
+
+                            //image
+                            d3.select( this.childNodes[4] )
+                            .attr("x", function(d) { return -radius(degreeF(d) * 5) ;})
+                            .attr("y", function(d) { return -radius(degreeF(d) * 5) ;})
+                            .attr('height', function(d) { return radius(degreeF(d) * 5 * 5); })
+                            .attr('width', function(d) { return radius(degreeF(d) * 5 * 5); });
+
+                        });*/
+
+            node.call(filterRanks)
+
+            //use this one for straight line links...
+            /*link
+                .attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });*/
+
+            // links are drawn as curved paths between nodes,
+            // through the intermediate nodes
+            function positionLink(d) {
+                var offset = 60;
+
+                var midpoint_x = (d.source.x + d.target.x) / 2;
+                var midpoint_y = (d.source.y + d.target.y) / 2;
+
+                var dx = (d.target.x - d.source.x);
+                var dy = (d.target.y - d.source.y);
+
+                var normalise = Math.sqrt((dx * dx) + (dy * dy));
+
+                var offSetX = midpoint_x + offset*(dy/normalise);
+                var offSetY = midpoint_y - offset*(dx/normalise);
+
+                /*return "M" + d.source.x + "," + d.source.y +
+                    "S" + offSetX + "," + offSetY +
+                    " " + d.target.x + "," + d.target.y;*/
+
+                return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
+            }
+
+            //link.attr("d", positionLink)
+
+            
+            function inputted() {
+            simulation.force("link").strength(+this.value);
+            simulation.alpha(1).restart();
+            d3.select("#link-str-val").text((+this.value * 100).toFixed(2) + "%");
+        }
+
+
+        function dragstarted(d) {
+            //if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+
+            isDragging = true;
+            d3.selectAll(".path2").remove()
+            d3.selectAll(".g2").remove()
+
+            if(d.class == "other"){
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+        }
+
+        function dragged(d) {
+            /*if(d.class == "other"){
+                d.fx = d3.event.x;
+                d.fy = d3.event.y;
+            }*/
+            //d.px += d3.event.dx;
+            //d.py += d3.event.dy;
+            /*d.x += d3.event.dx;
+            d.y += d3.event.dy; 
+            tick();*/
+            d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
+            tick();
+        }
+
+        function tick() {
+            link.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+
+            link2.attr("d", function(d) { return positionLink(d) });
+
+             d3.selectAll(".path2").attr("d", function(d) { return positionLink(d) });
+
+            node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+        };
+
+        function dragended(d) {
+            //if (!d3.event.active) simulation.alphaTarget(0);
+
+            isDragging = false;
+
+            if(d.class == "other"){
+                d.fx = null;
+                d.fy = null;
+            }
+
+        }
+
+               
+        d3.select("#restart-sim")
+            .on("click", restartSim)
+
+        function restartSim(){
+            simulation.alpha(1).restart();
+        }
+
+    });
+
+}
+
+    })
+
+    function zoomed() {
+        g.attr("transform", d3.event.transform);
+    // Manually offsets the zoom to compensate for the initial position. Should get fixed asap or the position variables made global.
+    //svg.attr("transform", "translate(" + (d3.event.transform.x + 400) + "," + (d3.event.transform.y + 325) + ")scale(" +  d3.event.transform.k + ")");
+    }
+
+
+
+</script>

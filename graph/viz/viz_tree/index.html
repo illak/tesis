@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<head>
+    <title>Redes de Músicos - Tree Layout</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="sp-bootstrap.min.css">
+    <link rel="shortcut icon" href="letter_j.ico" type="x-icon">
+    <link rel="stylesheet" href="main.css">
+</head>
+<style>
+
+.node {
+  cursor: pointer;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node text {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+</style>
+<body>
+  <div class="main-container">
+    <div id="rightpane">
+      <div id="legend"  style="float: left;">
+        <h4>Ayuda</h4>
+        Seleccione un artista invitado al festival para visualizar los distintos
+        caminos hacia artistas relevantes.
+
+
+        <br>
+        <br>
+         Una arista o conexión entre artistas denota que ambos tocaron
+         en un mismo Release. De esta manera se generan caminos que se 
+         pueden interpretar como: <i>el artista A tocó con el artista B que tocó con el artista C</i>
+         y así sucesivamente. Hay que destacar que los caminos mostrados son los más cortos
+         encontrados entre todos los que pueden existir, es decir, denotan la manera más rapida
+         de llegar desde un artista <b>invitado</b> a un artista <b>relevante</b>.
+        <br>
+
+
+      
+      </div>
+      <div style="float:left; margin-right: 40px;" id="legend" >
+          <h4 >Año</h4><div  class="input-group" id="year_selector"></div>
+      </div>
+    </div>
+    <div class ="left">
+      <div id="tree-container"></div>
+    </div>
+  </div>
+ </body>
+
+<!--<script src="http://d3js.org/d3.v3.min.js"></script>-->
+<script type="text/javascript" src="d3.min.js"></script>
+<script>
+
+
+
+
+// avoid clippath issue by assigning each image its own clippath
+var clipPathId = 0;
+var margin = {top: 20, right: 120, bottom: 20, left: 120},
+    width = screen.width,
+    height = screen.height;
+
+var i = 0,
+    duration = 750,
+    root;
+
+var tree = d3.layout.tree()
+    .size([height, width]);
+
+var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; });
+
+
+
+    // Define the zoom function for the zoomable tree
+
+    var zoom = function() {
+      var scale = d3.event.scale,
+          translation = d3.event.translate,
+          tbound = -height * scale,
+          bbound = height * scale,
+          lbound = (-width + margin.right) * scale,
+          rbound = (width - margin.left) * scale;
+      // limit translation to thresholds
+      translation = [
+          Math.max(Math.min(translation[0], rbound), lbound),
+          Math.max(Math.min(translation[1], bbound), tbound)
+      ];
+      svg.attr("transform", "translate(" + translation + ")" + " scale(" + scale + ")");
+  }
+
+    // define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
+    var zoomListener = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", zoom);
+
+       
+    d3.csv("years.csv", function(data){
+        //console.log(data);
+        //console.log(typeof(data[0].year));
+        //console.log(data.map(function(d) {return d.year}))
+
+        json = "tree_graph_" +  data[0].year + ".json";
+
+        
+
+        // Agregar los años de los JSON en el directorio
+        var data_year = data.map(function(d) {return d.year})
+
+        // SELECTOR DE AÑO
+        var select_year = d3.select('#year_selector')
+        .append('select')
+        .attr('class','select')
+        //.property("selected", function(d){ refresh() })
+        .on('change',onchange)
+
+        var options_year = select_year
+        .selectAll('option')
+        .data(data_year).enter()
+        .append('option')
+        .text(function (d) { return d; });
+
+        var svg = d3.select("#tree-container").append("svg")
+            .attr("width", width + margin.right + margin.left)
+            .attr("height", height + margin.top + margin.bottom)
+            .attr("class", "overlay")
+        .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+        /*
+            var data = ["Miles Davis",
+                        "Herbie Hancock",
+                        "Jack DeJohnette",
+                        "Bill Evans",
+                        "Charles Mungus",
+                        "McCoy Tyner",
+                        "David Murray",
+                        "John Coltrane",
+                        "Sonny Rollins"
+                    ];
+
+
+            var select = d3.select('#filters')
+            .append('select')
+                .attr('class','select')
+                //.property("selected", function(d){ refresh() })
+                .on('change',onchange)
+
+            var options = select
+            .selectAll('option')
+            .data(data).enter()
+            .append('option')
+                .text(function (d) { return d; });*/
+
+    
+        console.log(json)
+
+        //json = "tree_graph_2017.json"
+
+
+        function onchange() {
+        
+            selectYear = select_year.property('value')
+
+            json = "tree_graph_"+selectYear+".json";
+            
+            refresh(selectYear)
+        };
+
+
+
+
+        // Append a group which holds all nodes and which the zoom Listener can act upon.
+        var svgGroup = svg.append("g");
+        refresh(data[0].year);
+        function refresh(selectYear){
+        d3.json(json, function(error, flare) {
+            if (error) throw error;
+
+            root = flare;
+            root.x0 = height / 2;
+            root.y0 = 0;
+
+            function collapse(d) {
+            if (d.children) {
+                d._children = d.children;
+                d._children.forEach(collapse);
+                d.children = null;
+            }
+            }
+
+            root.children.forEach(collapse);
+            update(root, selectYear);
+        });}
+
+    d3.select(self.frameElement).style("height", "800px");
+
+    function update(source, selectYear) {
+
+    // Compute the new tree layout.
+    var nodes = tree.nodes(root).reverse(),
+        links = tree.links(nodes);
+
+    // Normalize for fixed-depth.
+    nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+    // Update the nodes…
+    var node = svg.selectAll("g.node")
+        .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+    // Enter any new nodes at the parent's previous position.
+    var nodeEnter = node.enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+        .on("click", click);
+
+    nodeEnter.append("circle")
+        .attr("r", 1e-6)
+
+    var relevanttext = "(relevante)"
+
+    nodeEnter.append("text")
+        .attr("x", function(d) { return d.children || d._children ? -40 : 40; })
+        .attr("dy", ".35em")
+        .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+        .text(function(d) { return d.children || d._children ? d.name: d.name + " " + relevanttext; })
+        .style("text-decoration", function(d) { return d.children || d._children ? "none" : "underline"; })
+        .style("font-size", function(d) { return d.children || d._children ? "12px" : "16px"; }) 
+        .style("fill-opacity", 1e-6);
+
+
+
+        clipPathId++;
+
+        nodeEnter.append("clipPath")
+            .attr("id", "clipCircle" + clipPathId)
+                .append("circle")
+                .attr("r", 32)
+
+        nodeEnter.append("image")
+                .attr('xlink:href',function(d,i){
+                return d.name != selectYear ? "images/" + d.image : "root_image.gif";
+                })
+                .attr('height',64)
+                .attr('width',64)
+                .attr("x", "-32px")
+                .attr("y", "-32px")
+                .attr("clip-path", "url(#clipCircle" + clipPathId + ")");
+
+
+
+
+
+    // Transition nodes to their new position.
+    var nodeUpdate = node.transition()
+        .duration(duration)
+        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+    nodeUpdate.select("circle")
+        .attr("r", 32);
+
+
+    nodeUpdate.select("text")
+        .style("fill-opacity", 1);
+
+    // Transition exiting nodes to the parent's new position.
+    var nodeExit = node.exit().transition()
+        .duration(duration)
+        .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+        .remove();
+
+    nodeExit.select("circle")
+        .attr("r", 32);
+
+    nodeExit.select("text")
+        .style("fill-opacity", 1e-6);
+
+    // Update the links…
+    var link = svg.selectAll("path.link")
+        .data(links, function(d) { return d.target.id; });
+
+    // Enter any new links at the parent's previous position.
+    link.enter().insert("path", "g")
+        .attr("class", "link")
+        .attr("d", function(d) {
+            var o = {x: source.x0, y: source.y0};
+            return diagonal({source: o, target: o});
+        });
+
+    // Transition links to their new position.
+    link.transition()
+        .duration(duration)
+        .attr("d", diagonal);
+
+    // Transition exiting nodes to the parent's new position.
+    link.exit().transition()
+        .duration(duration)
+        .attr("d", function(d) {
+            var o = {x: source.x, y: source.y};
+            return diagonal({source: o, target: o});
+        })
+        .remove();
+
+    // Stash the old positions for transition.
+    nodes.forEach(function(d) {
+        d.x0 = d.x;
+        d.y0 = d.y;
+    });
+    }
+
+    // Toggle children on click.
+    function click(d) {
+    if (d.children) {
+        d._children = d.children;
+        d.children = null;
+    } else {
+        d.children = d._children;
+        d._children = null;
+    }
+    update(d);
+    }
+
+
+})
+
+
+</script>

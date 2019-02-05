@@ -1,0 +1,13 @@
+/target/
+/bin/
+/project/project/
+/project/target/
+/.settings/
+/.cache-main
+/.classpath
+/.project
+/log*\.txt
+/.idea/
+/src/main/scala/pt/giosave*
+enqueue.sh
+slurm*

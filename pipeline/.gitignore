@@ -1,0 +1,8 @@
+/__pycache__/
+/spark-warehouse/
+enqueue.sh
+config.py
+access_tokens.py
+/LOGS/
+slurm-*
+

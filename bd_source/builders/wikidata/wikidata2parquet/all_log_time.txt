@@ -1,0 +1,21 @@
+real    261m10.768s
+user    409m27.228s
+sys     15m15.060s
+
+Con repartition
+real    38m36.970s
+user    299m56.584s
+sys     5m37.652s
+
+
+Con repartition, sin join, humanos
+real    42m51.357s
+user    118m18.112s
+sys     4m21.568s
+
+Con repartition, sin join, humanos, con cache
+real    63m13.483s
+user    342m2.612s
+sys     5m14.420s
+Creo que da mas porque se queda sin mem. Con 80Gb da lo mismo
+
