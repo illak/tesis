@@ -66,7 +66,7 @@ http://www.famaf.unc.edu.ar/~ilz0111/tesina/viz/
 
 
 ---
-###Pasos para la ejecución
+### Pasos para la ejecución
 
 **Importante**: Para la correcta ejecución de los programas tener en consideración:
 
